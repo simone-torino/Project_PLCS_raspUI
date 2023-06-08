@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
-import mysql.connector
+from flask_mysqldb import MySQL
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -31,52 +32,89 @@ def rfid_write(code):
         GPIO.cleanup()
     return True
 
+def get_badge(mysql, inserted_otp):
+    conn = mysql.connection
+    conn.begin()
+    cur = conn.cursor()
+
+    cur.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', [str(inserted_otp)])
+    conn.commit()
+    idInv = cur.fetchone()
+    if idInv == None:
+        return('ERROR: wrong otp')
+    else:
+        cur.execute('SELECT email FROM invitations WHERE otp_code = %s', [str(inserted_otp)])
+        conn.commit()
+        row_email = cur.fetchone()
+        email = row_email[0]
+
+        cur.execute('SELECT badge_id FROM people WHERE email = %s', [str(email)])
+        conn.commit()
+        badge = cur.fetchone()
+        badge = badge[0]
+
+        cur.close()
+
+        return(badge)
+
+
 
 # Route for user login
 @app.route('/', methods=["GET", "POST"])
-def login():
+def login(mysql):
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
         if not rfid_code:
             # Empty RFID code, display numeric keypad for login
             return keypad()
+        
+        #Non-empty RFID code, check if it exists in the database
+        conn = mysql.connection
+        conn.begin()
+        cur = conn.cursor()
 
-        # Non-empty RFID code, check if it exists in the database
-        cnx = mysql.connector.connect(
-            host=mysql_host,
-            user=mysql_user,
-            password=mysql_password,
-            database=mysql_db
-        )
-        cursor = cnx.cursor()
-
-        query = "SELECT * FROM people WHERE badge_id = %s"
-        cursor.execute(query, (rfid_code,))
-        result = cursor.fetchone()
-
-        if result:
-            # Correct RFID code, proceed to the dashboard
-            return render_template('access_allowed.html')
-        else:
-            # Incorrect RFID code, display error message
+        cur.execute('SELECT * FROM people WHERE badge_id = %s', [str(rfid_code)])
+        conn.commit()
+        row_badge = cur.fetchone()
+        
+        if row_badge == None:
             error_message = "Invalid RFID code"
-            return render_template('access_denied.html')
+        else:
+            return render_template('access_allowed.html')
 
     # GET request, render the login page
     return render_template('index.html')
 
-def get_otp():
-    return 123456
+def get_otp(mysql,inserted_code):
+    conn = mysql.connection
+    conn.begin()
+    cur = conn.cursor()
 
+    cur.execute('SELECT otp_code, otp_expiration FROM invitations')
+    conn.commit()
+    rows = cur.fetchall()
+    cur.close()
+
+    flag = 0
+
+    for row in rows:
+        if inserted_code == row[0] and datetime.now() < row[1]:
+            flag = 1
+
+    if flag == 0:
+         # L'OTP code inserito è errato o scaduto
+        return ("OTP - ERROR")
+    else:
+        return('OTP - CORRECT')
 
 @app.route('/keypad', methods=["GET", "POST"])
-def keypad():
+def keypad(mysql):
     if request.method == 'POST':
         inserted_code = request.form.get('code-input')
-        db_code = get_otp()
+        response = get_otp(mysql,inserted_code)
 
-        if db_code == inserted_code:
+        if response == 'OTP - CORRECT':
             result = "Code is correct!"
             return render_template('access_allowed.html', result=result)
         else:
