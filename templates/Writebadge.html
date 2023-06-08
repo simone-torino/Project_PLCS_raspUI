@@ -1,14 +1,56 @@
- 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Access Allowed</title>
+    <title>RFID Login</title>
+    <style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 400px;
+        width: 800px;
+        font-family: Arial, sans-serif;
+        border: 1px solid #c3c3c3;
+        background-color: rgb(255, 154, 39);
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 44px;
+        margin-bottom: 10px;
+        margin-top: -10px;
+    }
+
+    p {
+        font-size: 34px;
+        margin-bottom: 50px;
+    }
+
+    .scan-btn {
+        padding: 60px 100px;
+        font-size: 40px;
+        background-color: #005f00;
+        color: #ffffff;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .scan-btn:hover {
+        background-color: #00cc11;
+    }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Access Allowed</h1>
-        <p>Welcome! You have successfully logged in.</p>
-        <p>Access Granted.</p>
+        <h1>RFID Write</h1>
+        <p>Please scan your badge to write it</p>
+        <form action="/" method="post">
+            <input type="submit" value="Write badge" class="scan-btn">
+        </form>
     </div>
 </body>
 </html>
