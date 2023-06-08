@@ -43,6 +43,24 @@
         background-color: #0040b6;
     }
     </style>
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            // Simulating the post request and receiving the result
+            const isSuccess = Math.floor(Math.random() * 2);
+            const messageContainer = document.querySelector('.message-container');
+
+            // Clear any existing messages
+            messageContainer.innerHTML = '';
+
+            // Create and display the appropriate message
+            const message = document.createElement('p');
+            message.textContent = isSuccess ? 'Access allowed' : 'Badge not found in the database';
+            messageContainer.appendChild(message);
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -51,6 +69,7 @@
         <form action="/" method="post">
             <input type="submit" value="Scan" class="scan-btn">
         </form>
+        <div class="message-container"></div>
     </div>
 </body>
 </html>
