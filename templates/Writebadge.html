@@ -145,6 +145,8 @@
 
         if (isSuccess) {
             messageDiv.innerHTML = "Card written correctly! You can login now";
+            await sleep(1000);
+            window.location.href = "/";
         } else {
             messageDiv.innerHTML = "Can't write card, contact your administrator";
         }
