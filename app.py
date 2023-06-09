@@ -44,6 +44,7 @@ def read():
         if rfid_code == empty:
             print("Returning keypad")
             response = {'empty': True}
+            # Redirect to /keypad handled in javascript
             return jsonify(response)
 
         response = {'empty' : False}
@@ -80,9 +81,11 @@ def keypad():
         print("keypad POST, OTP checked")
 
         if result == 'OTP - CORRECT':
-            #response = {'success': True}
+            response = {'success': True}
             print("Correct OTP")
-            return redirect(url_for('write'))
+
+            # Redirect to /write handled in javascript
+            return jsonify(response)
         else:
             response = {'success': False}
             print("wrong OTP")
