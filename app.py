@@ -73,7 +73,7 @@ def keypad():
 
         if result == 'OTP - CORRECT':
             #response = {'success': True}
-            return write()
+            return redirect(url_for('write'))
         else:
             response = {'success': False}
             return jsonify(response)
