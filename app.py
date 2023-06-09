@@ -55,9 +55,10 @@ def read():
         cursor = conn.cursor()
 
         cursor.execute('SELECT badge_id FROM people WHERE first_name = "Muccio"')
-        mucciobadge = cursor.fetchone()
-        print(mucciobadge)
-        mucciobadge = str(re.sub(r'\W+', '', mucciobadge))
+        rowbadge = cursor.fetchone()
+        print(rowbadge)
+        mucciobadge = re.sub(r'\W+', '', rowbadge[0])
+        mucciobadge = str(mucciobadge)
         print(mucciobadge)
         print(len(mucciobadge))
         if(rfid_code == mucciobadge):{
