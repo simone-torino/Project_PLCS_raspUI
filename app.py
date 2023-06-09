@@ -40,6 +40,9 @@ def read():
         rfid_code = str(rfid_code)
         print(rfid_code)
         print(len(rfid_code))
+        rfid_code = rfid_code[:20]
+        print(rfid_code)
+        print(len(rfid_code))
 
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
