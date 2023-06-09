@@ -88,10 +88,18 @@
         }
       })
       .then(data => {
-        // Update the isSuccess variable based on the server response
-        const isSuccess = data.success
         
-        displayMessage(isSuccess, data.name, data.surname);
+        // If the card is empty redirect to the keypad
+        const isEmpty = data.empty;
+        if(isEmpty){
+            window.location.href = "/keypad";
+        }else{
+            // Update the isSuccess variable based on the server response
+
+            const isSuccess = data.success;
+            displayMessage(isSuccess, data.name, data.surname);
+        }
+
       })
       .catch(error => {
         // Handle any errors that occurred during the request

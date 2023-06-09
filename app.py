@@ -43,7 +43,10 @@ def read():
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
             print("Returning keypad")
-            return redirect(url_for('keypad'))
+            response = {'empty': True}
+            return jsonify(response)
+
+        response = {'empty' : False}
 
         # Non-empty RFID code, check if it exists in the database
         conn = get_db()
@@ -100,8 +103,6 @@ def write():
 
     # GET request, render the page    
     return render_template('Writebadge.html')
-
-
 
 def check_otp(inserted_otp):
     conn = get_db()
