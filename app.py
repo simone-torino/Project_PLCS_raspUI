@@ -21,6 +21,7 @@ reader = SimpleMFRC522()
 # Generic functions for RFID read and write
 def rfid_read():
     id, text = reader.read()
+    # text is always 48 characters long
     print("ID letto: ", id)
     print("Testo:", text)
     return text
@@ -36,14 +37,10 @@ def read():
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
-        empty = str("00")
-        rfid_code = str(rfid_code)
-        print(rfid_code)
-        print(len(rfid_code))
-        rfid_code = rfid_code[:20]
-        print(rfid_code)
-        print(len(rfid_code))
-
+        rfid_code = str(rfid_code) # Convert to str to validate the comparison with empty
+        rfid_code = rfid_code[:20] # Keep only the first 20 char since the read code is 48 long
+        empty = str("                    ")
+        
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
             print("Returning keypad")
@@ -56,17 +53,6 @@ def read():
         # Non-empty RFID code, check if it exists in the database
         conn = get_db()
         cursor = conn.cursor()
-
-        cursor.execute('SELECT badge_id FROM people WHERE first_name = "Muccio"')
-        rowbadge = cursor.fetchone()
-        print(rowbadge)
-        mucciobadge = re.sub(r'\W+', '', rowbadge[0])
-        mucciobadge = str(mucciobadge)
-        print(mucciobadge)
-        print(len(mucciobadge))
-        if(rfid_code == mucciobadge):{
-            print("Sono ugualiiiiii")
-        }
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
