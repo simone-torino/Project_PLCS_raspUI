@@ -65,7 +65,7 @@
       if (button.innerHTML === "Scan") {
         button.innerHTML = "Scanning...";
         sendPostRequest();
-        await sleep(1000);
+        await sleep(2000);
         button.innerHTML = "Scan";
       } else {
         button.innerHTML = "Scan";
@@ -95,11 +95,17 @@
       })
       .catch(error => {
         // Handle any errors that occurred during the request
+        if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
+          var messageDiv = document.getElementById("message");
+          messageDiv.innerHTML = "NetworkError when attempting to fetch resource.";
+          messageDiv.style.display = "block";
+        } else {
         console.log(error);
         
         var messageDiv = document.getElementById("message");
         messageDiv.innerHTML = "Request failed";
         messageDiv.style.display = "block";
+        }
       });
     }
     

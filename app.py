@@ -22,7 +22,7 @@ def rfid_read():
     try:
         id, text = reader.read()
         print("ID letto: ", id)
-        print("Testo: ", text)
+        print("Testo:", text)
         return text
     finally:
         return None
@@ -62,7 +62,7 @@ def read():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
+        cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
 
         if row_badge is None:
