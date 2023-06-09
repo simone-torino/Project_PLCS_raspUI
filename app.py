@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 import pymysql
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
+import re
 
 app = Flask(__name__)
 
@@ -55,9 +56,15 @@ def read():
         cursor.execute('SELECT badge_id FROM people WHERE first_name = "Muccio"')
         mucciobadge = cursor.fetchone()
         print(mucciobadge)
+        mucciobadge = str(re.sub(r'\W+', '', mucciobadge))
+        print(mucciobadge)
+        if(rfid_code == mucciobadge):{
+            print("Sono ugualiiiiii")
+        }
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
+        print(row_badge)
 
         if row_badge is None:
             # The RFID code was not found in the database
