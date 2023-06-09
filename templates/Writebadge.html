@@ -43,6 +43,15 @@
     .scan-btn:hover {
         background-color: #00cc11;
     }
+    
+    #return{
+            position: absolute;
+            top:390px;
+            left: 50px;
+            font-size: 26px;
+            font-weight:bold;
+            background-color: rgb(255, 255, 255);
+        }
     </style>
 </head>
 <script>
@@ -59,12 +68,16 @@
       }
     }
 
+    function goHome(){
+            window.location.href = "/";
+        }
 </script>
 <body>
     <div class="container">
         <h1>RFID Write</h1>
         <p>Please scan your badge to write it</p>
         <button id="myButton" onclick="writeRFID()">Scan</button>
+        <button id="return" onclick="goHome()">Return</button>
     </div>
 </body>
 </html>
