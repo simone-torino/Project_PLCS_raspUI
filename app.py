@@ -86,6 +86,7 @@ def keypad():
             return jsonify(response)
 
     # GET request, render the page
+    print("prima della get")
     return render_template('keypad.html')
 
 # Route for write page
