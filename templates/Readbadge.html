@@ -2,6 +2,7 @@
 <html>
 <head>
    <title>RFID Login</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
     .container {
         display: flex;
@@ -77,13 +78,9 @@
     async function scanRFID() {
       var button = document.getElementById("myButton");
       if (button.innerHTML === "Scan") {
-        (function (next) {
-                button.innerHTML = "Scanning...";
-                sendPostRequest();
-                next()
-            }(function () {
-                button.innerHTML = "Scan";
-            }))
+        button.innerHTML = "Scanning...";
+        await sendPostRequest();  
+        button.innerHTML = "Scan";
       } else {
         button.innerHTML = "Scan";
       }
