@@ -69,15 +69,20 @@ def read():
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
 def keypad():
+    print("Keypad loaded")
     if request.method == 'POST':
+        print("keypad POST")
         inserted_code = request.form.get('code-input')
         result = check_otp(inserted_code)
+        print("keypad POST, OTP checked")
 
         if result == 'OTP - CORRECT':
             #response = {'success': True}
+            print("Correct OTP")
             return redirect(url_for('write'))
         else:
             response = {'success': False}
+            print("wrong OTP")
             return jsonify(response)
 
     # GET request, render the page
