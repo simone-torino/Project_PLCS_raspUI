@@ -19,21 +19,15 @@ reader = SimpleMFRC522()
 
 # Generic functions for RFID read and write
 def rfid_read():
-    try:
-        id, text = reader.read()
-        print("ID letto: ", id)
-        print("Testo:", text)
-        return text
-    finally:
-        return None
+    id, text = reader.read()
+    print("ID letto: ", id)
+    print("Testo:", text)
+    return text
 
 def rfid_write(code):
-    try:
-        reader.write(code)
-        print("Written", code)
-        return True
-    finally:
-        return False
+    reader.write(code)
+    print("Written", code)
+    return True
 
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
