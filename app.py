@@ -54,7 +54,7 @@ def read():
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
-        if not rfid_code:
+        if rfid_code == "":
             # Empty RFID code, display numeric keypad for authentication
             return keypad_route()
 
