@@ -122,33 +122,47 @@
         }
 
         function submitCode() {
-            var codeInput = document.getElementById("code-input");
-            var code = codeInput.value;
+    var codeInput = document.getElementById("code-input");
+    var code = codeInput.value;
 
-            // Clear error message
-            var errorMessage = document.getElementById("error-message");
-            errorMessage.textContent = "";
+    // Clear error message
+    var errorMessage = document.getElementById("error-message");
+    errorMessage.textContent = "";
 
-            if (code.length === 6) {
-                // Mocking an API request
-                setTimeout(function() {
-                    var randomNumber = Math.floor(Math.random() * 2);
-                    if (randomNumber === 0) {
-                        // Show success message
-                        var resultMessage = document.getElementById("result");
-                        resultMessage.textContent = "Code is correct!";
-                        resultMessage.style.visibility = "visible";
-                    } else {
-                        // Show error message
-                        errorMessage.textContent = "Incorrect code. Please try again.";
-                        errorMessage.style.visibility = "visible";
-                    }
-                }, 1000);
+    if (code.length === 6) {
+        // Make the POST request to your Flask server
+        fetch('/keypad', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                code: code
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the UI based on the server response
+            if (data.success) {
+                // Show success message
+                var resultMessage = document.getElementById("result");
+                resultMessage.textContent = "Code is correct!";
+                resultMessage.style.visibility = "visible";
             } else {
-                errorMessage.textContent = "Code must be exactly six characters.";
+                // Show error message
+                errorMessage.textContent = "Incorrect code. Please try again.";
                 errorMessage.style.visibility = "visible";
             }
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle any errors that occurred during the request
+        });
+    } else {
+        errorMessage.textContent = "Code must be exactly six characters.";
+        errorMessage.style.visibility = "visible";
+    }
+}
 
         function clearCodeBoxes() {
             var codeBoxes = document.getElementsByClassName("code-box");
@@ -161,7 +175,7 @@
 <body>
     <div class="container">
         <div class="column1">
-            <div id="message">Insert the OTP you received from the<br>Company admin to validate your badge</div>
+            <div id="message">The scanned RFID card is empty.<br>Insert the OTP you received from the<br>Company admin to validate your badge</div>
             <div class="code-boxes">
                 <div class="code-box"></div>
                 <div class="code-box"></div>

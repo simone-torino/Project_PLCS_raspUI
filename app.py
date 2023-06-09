@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_mysqldb import MySQL
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 # MySQL configuration
-mysql_host = '192.168.184.16'
-mysql_user = 'root'
+mysql_host = '192.168.80.16'
+mysql_user = 'pi'
 mysql_password = '123'
 mysql_db = 'dac'
 
@@ -23,17 +23,17 @@ def rfid_read():
         id, text = reader.read()
         print("ID letto: ", id)
         print("Testo: ", text)
-    finally:
-        GPIO.cleanup()
         return text
+    finally:
+        return None
 
 def rfid_write(code):
     try:
         reader.write(code)
-        print("Written")
-    finally:
-        GPIO.cleanup()
+        print("Written", code)
         return True
+    finally:
+        return False
 
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
@@ -43,10 +43,10 @@ def read_route():
 def read(mysql):
     if request.method == "POST":
         # Check if the RFID code is empty
-        rfid_code = 1
+        rfid_code = rfid_read()
         if not rfid_code:
-            # Empty RFID code, display numeric keypad for login
-            return keypad()
+            # Empty RFID code, display numeric keypad for authentication
+            return keypad_route()
         
         #Non-empty RFID code, check if it exists in the database
         conn = mysql.connection
@@ -58,9 +58,13 @@ def read(mysql):
         row_badge = cur.fetchone()
         
         if row_badge == None:
-            error_message = "Invalid RFID code"
+            # The RFID code was not found in the database
+            response = {'success': False}
+            return jsonify(response)
         else:
-            return render_template('Writebadge.html')
+            # The RFID code was found
+            response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
+            return jsonify(response)
 
     # GET request, render the page
     return render_template('Readbadge.html')
@@ -73,13 +77,14 @@ def keypad_route():
 def keypad(mysql):
     if request.method == 'POST':
         inserted_code = request.form.get('code-input')
-        response = get_otp(mysql,inserted_code)
+        result = check_otp(mysql,inserted_code)
 
-        if response == 'OTP - CORRECT':
-            result = "Code is correct!"
-            return write(mysql)
+        if result == 'OTP - CORRECT':
+            #response = {'success': True}
+            return write_route()
         else:
-            result = "Code is incorrect!"
+            response = {'success': False}
+            return jsonify(response)
 
     # GET request, render the page
     return render_template('keypad.html')
@@ -90,7 +95,8 @@ def write_route():
 
 def write(mysql):
     if request.method == 'POST':
-        badge = get_badge();
+        badge = get_badge()
+        rfid_write(badge)
         
     # GET request, render the page    
     return render_template('Writebadge.html')
@@ -99,7 +105,7 @@ if __name__ == '__main__':
     app.run()
 
 
-def get_otp(mysql,inserted_code):
+def check_otp(mysql,inserted_code):
     conn = mysql.connection
     conn.begin()
     cur = conn.cursor()

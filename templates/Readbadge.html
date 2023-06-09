@@ -45,22 +45,50 @@
     </style>
     <script>
         const form = document.querySelector('form');
+        const scanButton = document.querySelector('.scan-btn');
+        const messageContainer = document.querySelector('.message-container');
+    
         form.addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting
-
-            // Simulating the post request and receiving the result
-            const isSuccess = Math.floor(Math.random() * 2);
-            const messageContainer = document.querySelector('.message-container');
-
+    
+            // Change button text to indicate scanning
+            scanButton.value = 'Scanning...';
+    
+            // Make the POST request to your server
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ /* request data if needed */ })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the isSuccess variable based on the server response
+                const isSuccess = data.success;
+                    
+                // Display the message and reset button text after scanning
+                displayMessage(isSuccess, data.name, data.surname);
+                scanButton.value = 'Scan';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle any errors that occurred during the request
+            });
+        });
+    
+        function displayMessage(isSuccess, name, surname) {
             // Clear any existing messages
             messageContainer.innerHTML = '';
-
+    
             // Create and display the appropriate message
             const message = document.createElement('p');
-            message.textContent = isSuccess ? 'Access allowed' : 'Badge not found in the database';
+            message.textContent = isSuccess ? 'Welcome ' + name + ' ' + surname : 'Badge not found in the database';
+
             messageContainer.appendChild(message);
-        });
+        }
     </script>
+    
 </head>
 <body>
     <div class="container">
