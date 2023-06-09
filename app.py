@@ -39,6 +39,7 @@ def read():
         empty = str("00")
         rfid_code = str(rfid_code)
         print(rfid_code)
+        print(rfid_code.len)
 
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
@@ -58,6 +59,7 @@ def read():
         print(mucciobadge)
         mucciobadge = str(re.sub(r'\W+', '', mucciobadge))
         print(mucciobadge)
+        print(mucciobadge.len)
         if(rfid_code == mucciobadge):{
             print("Sono ugualiiiiii")
         }
