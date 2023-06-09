@@ -143,10 +143,15 @@
     errorMessage.textContent = "";
 
     if (code.length === 6) {
+
+        // Create form data
+        var formData = new FormData();
+        formData.append('code', code);
+
         // Make the POST request to your Flask server
         fetch('/keypad', {
             method: 'POST',
-            body: code
+            body: formData
         })
         .then(response => response.json())
         .then(data => {

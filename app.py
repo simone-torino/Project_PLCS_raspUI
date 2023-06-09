@@ -123,6 +123,7 @@ def check_otp(inserted_otp):
 
     flag = 0
     inserted_otp = str(inserted_otp)
+    inserted_otp = inserted_otp[:6]
     print(inserted_otp)
 
     for row in rows:
