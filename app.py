@@ -34,7 +34,6 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read():
-    session.clear()
     if request.method == "POST":
         print("Sto leggendo la carta")
         # Check if the RFID code is empty
@@ -121,6 +120,8 @@ def write():
             rfid_write(badge)
             ("Badge written:")
             print(badge)
+
+            session.clear()
 
             response = {'success': True}
             return jsonify(response)      

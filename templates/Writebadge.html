@@ -30,7 +30,7 @@
             margin-bottom: 50px;
         }
 
-        #myButton {
+        #write-button {
             background-color: #005f00;
             width: 300px;
             height: 150px;
@@ -43,7 +43,7 @@
             transition: background-color 0.3s ease;
         }
 
-        #myButton:hover {
+        #write-button:hover {
             background-color: #008f0c;
         }
 
@@ -79,7 +79,7 @@
     }
 
     async function writeRFID() {
-        var button = document.getElementById("myButton");
+        var button = document.getElementById("write-button");
         if (button.innerHTML === "SCAN") {
             button.innerHTML = "SCANNING...";
             sendPostRequestw();  
@@ -91,12 +91,12 @@
     }
 
     function sendPostRequestw() {
-        fetch('/', {
+        fetch('/write', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ data: 'data' })
+            body: JSON.stringify({ request: 'request' })
         })
             .then(response => {
                 if (response.ok) {
@@ -105,10 +105,10 @@
                     throw new Error('Post request failed.');
                 }
             })
-            .then(data => {
+            .then(request => {
                 // Update the isSuccess variable based on the server response
 
-                const isSuccess = data.success;
+                const isSuccess = request.success;
                 displayMessage(isSuccess);
 
             })
@@ -163,7 +163,7 @@
     <div class="container">
         <h1>RFID Write</h1>
         <p>Please scan your badge to write it</p>
-        <button id="myButton" onclick="writeRFID()">SCAN</button>
+        <button id="write-button" onclick="writeRFID()">SCAN</button>
         <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>

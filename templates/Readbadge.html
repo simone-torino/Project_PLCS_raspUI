@@ -28,7 +28,7 @@
         margin-bottom: 150px;
     }
 
-    #myButton {
+    #read-button {
         width: 300px;
         height: 150px;
         font-size: 40px;
@@ -44,7 +44,7 @@
         left: 400px;
     }
 
-    #myButton:hover {
+    #read-button:hover {
         background-color: #0040b6;
     }
     
@@ -81,7 +81,7 @@
     }
 
     async function scanRFID() {
-      var button = document.getElementById("myButton");
+      var button = document.getElementById("read-button");
       if (button.innerHTML === "SCAN") {
         button.innerHTML = "SCANNING...";
         sendPostRequest();  
@@ -168,7 +168,7 @@
     <div class="container">
         <h1>RFID Login</h1>
         <p>Please scan your RFID card</p>
-        <button id="myButton" onclick="scanRFID()">SCAN</button>
+        <button id="read-button" onclick="scanRFID()">SCAN</button>
         <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
