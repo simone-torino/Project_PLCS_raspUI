@@ -46,7 +46,7 @@
             display: flex;
             justify-content: center;
             margin-bottom: 10px;
-            top: 300px;
+            top: 240px;
             
         }
 
@@ -77,9 +77,9 @@
 
         #error-message {
             position: absolute;
-            top: 250px;
+            top: 300px;
             left: 50px;
-            color: rgb(151, 1, 1);
+            color: rgb(204, 0, 0);
             font-weight: bold;
             margin-top: 10px;
             font-size: 20px;
@@ -87,11 +87,20 @@
 
         #result {
             position: absolute;
-            top: 250px;
+            top: 300px;
             left: 110px;
             font-size: 25px;
-            color: rgb(0, 71, 0);
+            color: rgb(0, 138, 0);
             font-weight: bold;
+        }
+        
+        #return{
+            position: absolute;
+            top:390px;
+            left: 50px;
+            font-size: 26px;
+            font-weight:bold;
+            background-color: rgb(255, 255, 255);
         }
     </style>
    <script>
@@ -127,6 +136,7 @@
         function submitCode() {
     var codeInput = document.getElementById("code-input");
     var code = codeInput.value;
+    console.log(code);
 
     // Clear error message
     var errorMessage = document.getElementById("error-message");
@@ -174,6 +184,10 @@
                 codeBoxes[i].textContent = "";
             }
         }
+        
+        function goHome(){
+            window.location.href = "/";
+        }
     </script>
 </head>
 <body>
@@ -210,6 +224,7 @@
                 <button onclick="submitCode()">Submit</button>
             </div>
         </div>
+        <button id="return" onclick="goHome()">Return</button>
     </div>
 </body>
 </html>

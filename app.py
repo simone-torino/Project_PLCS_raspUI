@@ -78,7 +78,8 @@ def keypad():
     print("Keypad loaded")
     if request.method == 'POST':
         print("keypad POST")
-        inserted_code = request.form.get('code-input')
+        inserted_code = request.form.get('code')
+        print("code from html: ", inserted_code)
         result = check_otp(inserted_code)
         print("keypad POST, OTP checked")
 
@@ -121,11 +122,12 @@ def check_otp(inserted_otp):
     cursor.close()
 
     flag = 0
+    inserted_otp = str(inserted_otp)
     print(inserted_otp)
 
     for row in rows:
         print(row[0], " ", row[1])
-        if inserted_otp == row[0]: 
+        if inserted_otp == str(row[0]): 
             if datetime.now() < row[1]:
                 flag = 1
             else:
