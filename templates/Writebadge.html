@@ -1,146 +1,152 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>RFID Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 460px;
-        width: 790px;
-        font-family: Arial, sans-serif;
-        border: 1px solid #c3c3c3;
-        background-color: rgb(255, 154, 39);
-        padding: 20px;
-        box-sizing: border-box;
-    }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 460px;
+            width: 790px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #c3c3c3;
+            background-color: rgb(255, 154, 39);
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-    h1 {
-        font-size: 44px;
-        margin-bottom: 10px;
-        margin-top: -10px;
-    }
+        h1 {
+            font-size: 44px;
+            margin-bottom: 10px;
+            margin-top: -10px;
+        }
 
-    p {
-        font-size: 34px;
-        margin-bottom: 50px;
-    }
+        p {
+            font-size: 34px;
+            margin-bottom: 50px;
+        }
 
-    #myButton{
-        background-color: #005f00;
-        width: 300px;
-        height: 150px;
-        font-size: 40px;
-        color: #ffffff;
-        border: none;
-        border-radius: 40px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        #myButton {
+            background-color: #005f00;
+            width: 300px;
+            height: 150px;
+            font-size: 40px;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    #myButton:hover {
-        background-color: #008f0c;
-    }
+        #myButton:hover {
+            background-color: #008f0c;
+        }
 
-    #message {
-        position: absolute;
-        display: none;
-        top: 420px;
-        left: 320px;
-        font-weight: bold;
-        font-size: 25px;
-    }
+        #message {
+            position: absolute;
+            display: none;
+            top: 420px;
+            left: 300px;
+            font-weight: bold;
+            font-size: 25px;
+        }
 
-    #home-button {
-      position: absolute;
-        top:390px;
-        left: 50px;
-        height: 50px;
-        width: 50px;
-    }
-    
-    #reload-button {
-      position: absolute;
-        top:390px;
-        left: 101px;
-        height: 50px;
-        width: 50px;
-    }
+        #home-button {
+            position: absolute;
+            top: 390px;
+            left: 50px;
+            height: 50px;
+            width: 50px;
+        }
 
+        #reload-button {
+            position: absolute;
+            top: 390px;
+            left: 101px;
+            height: 50px;
+            width: 50px;
+        }
     </style>
 </head>
 <script>
 
-    async function writeRFID() {
-      var button = document.getElementById("myButton");
-      if (button.innerHTML === "Scan") {
-        button.innerHTML = "Scanning...";
-        await sendPostRequest();
-        button.innerHTML = "Scan";
-      } else {
-        button.innerHTML = "Scan";
-      }
+    function writeRFID() {
+        var button = document.getElementById("myButton");
+        if (button.innerHTML === "Scan") {
+
+            (function (next) {
+                button.innerHTML = "Scanning...";
+                sendPostRequest();
+                next()
+            }(function () {
+                button.innerHTML = "Scan";
+            }))
+
+        } else {
+            button.innerHTML = "Scan";
+        }
     }
 
     function sendPostRequest() {
         fetch('/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ data: 'data' })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Post request failed.');
-        }
-      })
-      .then(data => {
-            // Update the isSuccess variable based on the server response
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ data: 'data' })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Post request failed.');
+                }
+            })
+            .then(data => {
+                // Update the isSuccess variable based on the server response
 
-            const isSuccess = data.success;
-            displayMessage(isSuccess);
+                const isSuccess = data.success;
+                displayMessage(isSuccess);
 
-      })
-      .catch(error => {
-        // Handle any errors that occurred during the request
-        if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
-          var messageDiv = document.getElementById("message");
-          displayError(2);
-        } else {
-        console.log(error);
-        
-        var messageDiv = document.getElementById("message");
-        displayError(1);
-        }
-      });
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the request
+                if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
+                    var messageDiv = document.getElementById("message");
+                    displayError(2);
+                } else {
+                    console.log(error);
+
+                    var messageDiv = document.getElementById("message");
+                    displayError(1);
+                }
+            });
     }
 
     async function displayError(err_id) {
         var messageDiv = document.getElementById("message");
-        
-        if (err_id == 1){
-            messageDiv.innerHTML = "Request failed"; 
-        }else{
-            messageDiv.innerHTML = "Network error when <br>attempting to fetch resource";
+
+        if (err_id == 1) {
+            messageDiv.innerHTML = "Request failed";
+        } else {
+            messageDiv.innerHTML = "Network error when attempting to fetch resource";
         }
         messageDiv.style.display = "block";
         //Reset message after 3s
         await sleep(3000);
         messageDiv.innerHTML = "";
     }
-    
+
     async function displayMessage(isSuccess) {
         var messageDiv = document.getElementById("message");
-        
-        if (isSuccess){
-            messageDiv.innerHTML = "Card written correctly!"; 
-        }else{
+
+        if (isSuccess) {
+            messageDiv.innerHTML = "Card written correctly!";
+        } else {
             messageDiv.innerHTML = "Can't write card";
         }
         messageDiv.style.display = "block";
@@ -149,10 +155,11 @@
         messageDiv.innerHTML = "";
     }
 
-    function goHome(){
-            window.location.href = "/";
-        }
+    function goHome() {
+        window.location.href = "/";
+    }
 </script>
+
 <body>
     <div class="container">
         <h1>RFID Write</h1>
@@ -163,4 +170,5 @@
         <div id="message"></div>
     </div>
 </body>
+
 </html>
