@@ -8,8 +8,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 400px;
-        width: 800px;
+        height: 450px;
+        width: 790px;
         font-family: Arial, sans-serif;
         border: 1px solid #c3c3c3;
         background-color: rgb(255, 154, 39);
@@ -37,6 +37,7 @@
         border-radius: 40px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        font-weight: bold;
     }
 
     .scan-btn:hover {
@@ -44,13 +45,26 @@
     }
     </style>
 </head>
+<script>
+
+    async function writeRFID() {
+      var button = document.getElementById("myButton");
+      if (button.innerHTML === "Scan") {
+        button.innerHTML = "Scanning...";
+        //sendPostRequest();
+        await sleep(2000);
+        button.innerHTML = "Scan";
+      } else {
+        button.innerHTML = "Scan";
+      }
+    }
+
+</script>
 <body>
     <div class="container">
         <h1>RFID Write</h1>
         <p>Please scan your badge to write it</p>
-        <form action="/" method="post">
-            <input type="submit" value="Write badge" class="scan-btn">
-        </form>
+        <button id="myButton" onclick="writeRFID()">Scan</button>
     </div>
 </body>
 </html>

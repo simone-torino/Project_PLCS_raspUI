@@ -8,7 +8,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 500px;
+        height: 450px;
         width: 790px;
         font-family: Arial, sans-serif;
         border: 1px solid #c3c3c3;
@@ -88,7 +88,7 @@
         }
       })
       .then(data => {
-        
+
         // If the card is empty redirect to the keypad
         const isEmpty = data.empty;
         if(isEmpty){
@@ -121,7 +121,7 @@
         var messageDiv = document.getElementById("message");
         
         if (isSuccess){
-            messageDiv.innerHTML = "Welcome " + name + " " + surname; 
+            messageDiv.innerHTML = "Welcome back<br>" + name + " " + surname; 
         }else{
             messageDiv.innerHTML = "Badge not found<br>in the database";
         }
