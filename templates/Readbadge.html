@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RFID Login</title>
+   <title>RFID Login</title>
     <style>
     .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 400px;
-        width: 800px;
+        height: 500px;
+        width: 790px;
         font-family: Arial, sans-serif;
         border: 1px solid #c3c3c3;
         background-color: rgb(255, 154, 39);
@@ -18,18 +18,18 @@
     }
 
     h1 {
-        font-size: 44px;
-        margin-bottom: 10px;
-        margin-top: -10px;
+        font-size: 54px;
+        margin-top: -130px;
     }
 
     p {
         font-size: 34px;
-        margin-bottom: 50px;
+        margin-bottom: 150px;
     }
 
-    .scan-btn {
-        padding: 60px 100px;
+    button {
+        width: 300px;
+        height: 150px;
         font-size: 40px;
         background-color: #00005f;
         color: #ffffff;
@@ -37,67 +37,91 @@
         border-radius: 40px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        position: absolute;
+        top: 280px;
+        left: 400px;
     }
 
-    .scan-btn:hover {
+    button:hover {
         background-color: #0040b6;
     }
-    </style>
-    <script>
-        const form = document.querySelector('form');
-        const scanButton = document.querySelector('.scan-btn');
-        const messageContainer = document.querySelector('.message-container');
     
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting
+    #message {
+        position: absolute;
+        display: none;
+        top: 330px;
+        left: 60px;
+        font-weight: bold;
+        font-size: 25px;
+    }
+  </style>
+  <script>
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
     
-            // Change button text to indicate scanning
-            scanButton.value = 'Scanning...';
+    async function scanRFID() {
+      var button = document.getElementById("myButton");
+      if (button.innerHTML === "Scan") {
+        button.innerHTML = "Scanning...";
+        sendPostRequest();
+        await sleep(1000);
+        button.innerHTML = "Scan";
+      } else {
+        button.innerHTML = "Scan";
+      }
+    }
     
-            // Make the POST request to your server
-            fetch('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ /* request data if needed */ })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Update the isSuccess variable based on the server response
-                const isSuccess = data.success;
-                    
-                // Display the message and reset button text after scanning
-                displayMessage(isSuccess, data.name, data.surname);
-                scanButton.value = 'Scan';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle any errors that occurred during the request
-            });
-        });
-    
-        function displayMessage(isSuccess, name, surname) {
-            // Clear any existing messages
-            messageContainer.innerHTML = '';
-    
-            // Create and display the appropriate message
-            const message = document.createElement('p');
-            message.textContent = isSuccess ? 'Welcome ' + name + ' ' + surname : 'Badge not found in the database';
-
-            messageContainer.appendChild(message);
+    function sendPostRequest() {
+      fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data: 'data' })
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Post request failed.');
         }
-    </script>
+      })
+      .then(data => {
+        // Update the isSuccess variable based on the server response
+        const isSuccess = data.success
+        
+        displayMessage(isSuccess, data.name, data.surname);
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the request
+        console.log(error);
+        
+        var messageDiv = document.getElementById("message");
+        messageDiv.innerHTML = "Request failed";
+        messageDiv.style.display = "block";
+      });
+    }
     
+    function displayMessage(isSuccess, name, surname) {
+        var messageDiv = document.getElementById("message");
+        
+        if (isSuccess){
+            messageDiv.innerHTML = "Welcome " + name + " " + surname; 
+        }else{
+            messageDiv.innerHTML = "Badge not found in the database";
+        }
+        messageDiv.style.display = "block";
+
+    }
+  </script>
 </head>
 <body>
     <div class="container">
         <h1>RFID Login</h1>
         <p>Please scan your RFID card</p>
-        <form action="/" method="post">
-            <input type="submit" value="Scan" class="scan-btn">
-        </form>
-        <div class="message-container"></div>
-    </div>
+        <button id="myButton" onclick="scanRFID()">Scan</button>
+        <div id="message"></div>
+  </div>
 </body>
 </html>

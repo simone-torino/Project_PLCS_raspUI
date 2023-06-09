@@ -41,6 +41,16 @@ def rfid_write(code):
 def read_route():
     return read()
 
+# Route for keypad page
+@app.route('/keypad', methods=["GET", "POST"])
+def keypad_route():
+    return keypad()
+
+# Route for write page
+@app.route('/write', methods=['GET', 'POST'])
+def write_route():
+    return write()
+
 def read():
     if request.method == "POST":
         # Check if the RFID code is empty
@@ -68,11 +78,6 @@ def read():
     # GET request, render the page
     return render_template('Readbadge.html')
 
-
-@app.route('/keypad', methods=["GET", "POST"])
-def keypad_route():
-    return keypad()
-
 def keypad():
     if request.method == 'POST':
         inserted_code = request.form.get('code-input')
@@ -88,10 +93,6 @@ def keypad():
     # GET request, render the page
     return render_template('keypad.html')
 
-@app.route('/write', methods=['GET', 'POST'])
-def write_route():
-    return write()
-
 def write():
     if request.method == 'POST':
         badge = get_badge()
@@ -102,10 +103,7 @@ def write():
     # GET request, render the page    
     return render_template('Writebadge.html')
 
-if __name__ == '__main__':
-    app.run()
-
-def check_otp(inserted_code):
+def check_otp(inserted_otp):
     conn = get_db()
     cursor = conn.cursor()
     conn = get_db()
@@ -119,7 +117,7 @@ def check_otp(inserted_code):
     flag = 0
 
     for row in rows:
-        if inserted_code == row[0] and datetime.now() < row[1]:
+        if inserted_otp == row[0] and datetime.now() < row[1]:
             flag = 1
 
     if flag == 0:
@@ -127,7 +125,6 @@ def check_otp(inserted_code):
         return "OTP - ERROR"
     else:
         return 'OTP - CORRECT'
-
 
 def get_badge():
     inserted_otp = "some_otp"
@@ -150,3 +147,6 @@ def get_badge():
         cursor.close()
 
         return badge
+
+if __name__ == '__main__':
+    app.run()
