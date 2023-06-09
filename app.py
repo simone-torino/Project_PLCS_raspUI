@@ -55,9 +55,11 @@ def read():
         if row_badge is None:
             # The RFID code was not found in the database
             response = {'success': False}
+            print("RFID not found")
             return jsonify(response)
         else:
             # The RFID code was found
+            print("RFID found")
             response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
             return jsonify(response)
 
