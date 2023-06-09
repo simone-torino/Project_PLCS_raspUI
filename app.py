@@ -76,7 +76,7 @@ def keypad_route():
 def keypad():
     if request.method == 'POST':
         inserted_code = request.form.get('code-input')
-        result = check_otp(mysql,inserted_code)
+        result = check_otp(inserted_code)
 
         if result == 'OTP - CORRECT':
             #response = {'success': True}
