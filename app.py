@@ -121,10 +121,15 @@ def check_otp(inserted_otp):
     cursor.close()
 
     flag = 0
+    print(inserted_otp)
 
     for row in rows:
-        if inserted_otp == row[0] and datetime.now() < row[1]:
-            flag = 1
+        print(row[0], " ", row[1])
+        if inserted_otp == row[0]: 
+            if datetime.now() < row[1]:
+                flag = 1
+            else:
+                print("OTP expired on ", row[1])
 
     if flag == 0:
          # The entered OTP code is incorrect or expired
