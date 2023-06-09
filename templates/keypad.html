@@ -146,11 +146,7 @@
         // Make the POST request to your Flask server
         fetch('/keypad', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: code
-            
         })
         .then(response => response.json())
         .then(data => {
