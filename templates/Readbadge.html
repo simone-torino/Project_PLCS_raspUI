@@ -32,6 +32,7 @@
         width: 300px;
         height: 150px;
         font-size: 40px;
+        font-weight: bold;
         background-color: #00005f;
         color: #ffffff;
         border: none;
@@ -81,13 +82,13 @@
 
     async function scanRFID() {
       var button = document.getElementById("myButton");
-      if (button.innerHTML === "Scan") {
-        button.innerHTML = "Scanning...";
+      if (button.innerHTML === "SCAN") {
+        button.innerHTML = "SCANNING...";
         sendPostRequest();  
         await sleep(3000);
-        button.innerHTML = "Scan";
+        button.innerHTML = "SCAN";
       } else {
-        button.innerHTML = "Scan";
+        button.innerHTML = "SCAN";
       }
     }
     

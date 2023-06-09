@@ -36,6 +36,7 @@ def rfid_write(code):
 def read():
     session.clear()
     if request.method == "POST":
+        print("Sto leggendo la carta")
         # Check if the RFID code is empty
         rfid_code = rfid_read()
         rfid_code = str(rfid_code) # Convert to str to validate the comparison with empty
@@ -107,6 +108,7 @@ def write():
 
         # Get previously inserted OTP from the session
         inserted_otp = session.get('OTP')
+        print("OTP from session:", inserted_otp)
 
         # Retrieve from the database the badge code that corresponds to the OTP 
         badge = get_badge(inserted_otp)
@@ -171,7 +173,7 @@ def get_badge(inserted_otp):
 
     # CHeck if the inserted otp is present in the invitations table
     cursor.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
-    idInv = cursor.fetchone() #TODO: this is always none
+    idInv = cursor.fetchone() 
     if idInv is None:
         # If it's not probably something's wrong
         return 'ERROR: wrong otp'
