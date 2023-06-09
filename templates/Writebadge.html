@@ -51,7 +51,7 @@
             position: absolute;
             display: none;
             top: 420px;
-            left: 300px;
+            left: 280px;
             font-weight: bold;
             font-size: 25px;
         }
@@ -82,7 +82,7 @@
         var button = document.getElementById("write-button");
         if (button.innerHTML === "SCAN") {
             button.innerHTML = "SCANNING...";
-            sendPostRequestw();  
+            sendPostRequest();  
             await sleep(3000);
             button.innerHTML = "SCAN";
         } else {
@@ -90,7 +90,7 @@
         }
     }
 
-    function sendPostRequestw() {
+    function sendPostRequest() {
         fetch('/write', {
             method: 'POST',
             headers: {
@@ -130,7 +130,7 @@
         var messageDiv = document.getElementById("message");
 
         if (err_id == 1) {
-            messageDiv.innerHTML = "Request failed";
+            messageDiv.innerHTML = "Request failed, try again later";
         } else {
             messageDiv.innerHTML = "Network error when attempting to fetch resource";
         }
@@ -144,9 +144,9 @@
         var messageDiv = document.getElementById("message");
 
         if (isSuccess) {
-            messageDiv.innerHTML = "Card written correctly!";
+            messageDiv.innerHTML = "Card written correctly! You can login now";
         } else {
-            messageDiv.innerHTML = "Can't write card";
+            messageDiv.innerHTML = "Can't write card, contact your administrator";
         }
         messageDiv.style.display = "block";
         //Reset message after 5s

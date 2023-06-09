@@ -66,6 +66,8 @@ def read():
         else:
             # The RFID code was found
             print("RFID found")
+            # TODO: controlli su area
+            # TODO: log dell'ora di accesso 
             response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
             return jsonify(response)
 
