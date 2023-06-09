@@ -34,11 +34,9 @@ def rfid_write(code):
 def read():
     if request.method == "POST":
         # Check if the RFID code is empty
-        rfid_code = "00"
+        rfid_code = "U91tXCzG3aIrOuhZgXP4"
         empty = str("00")
-        print(empty)
         rfid_code = str(rfid_code)
-        print(rfid_code)
 
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
