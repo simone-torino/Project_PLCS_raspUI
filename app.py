@@ -66,7 +66,7 @@ def write():
 def read():
     if request.method == "POST":
         # Check if the RFID code is empty
-        rfid_code = rfid_read()
+        rfid_code = "00"
         empty = str("00")
         print(empty)
         rfid_code = str(rfid_code)
