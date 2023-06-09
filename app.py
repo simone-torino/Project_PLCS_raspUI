@@ -37,6 +37,9 @@ def read():
         rfid_code = rfid_read()
         empty = str("00")
         rfid_code = str(rfid_code)
+        print(rfid_code)
+        rfid_code = rfid_code[1:]
+        print(rfid_code)
 
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
