@@ -94,14 +94,23 @@
             font-weight: bold;
         }
         
-        #return{
-            position: absolute;
-            top:390px;
-            left: 50px;
-            font-size: 26px;
-            font-weight:bold;
-            background-color: rgb(255, 255, 255);
-        }
+        #home-button {
+      position: absolute;
+        top:390px;
+        left: 50px;
+        height: 50px;
+        width: 50px;
+         background-color: rgb(255, 255, 255);
+    }
+    
+    #reload-button {
+      position: absolute;
+        top:390px;
+        left: 101px;
+        height: 50px;
+        width: 50px;
+        background-color: rgb(255, 255, 255);
+    }
     </style>
    <script>
         function appendDigit(digit) {
@@ -205,6 +214,8 @@
             <div class="error-container">
                 <div id="error-message"></div>
                 <p id="result"></p>
+                <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
+        <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
             </div>
         </div>
         <div class="column2">

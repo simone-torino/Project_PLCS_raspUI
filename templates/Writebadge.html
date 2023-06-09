@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>RFID Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
     .container {
         display: flex;
@@ -44,15 +45,6 @@
         background-color: #008f0c;
     }
 
-    #return{
-            position: absolute;
-            top:390px;
-            left: 50px;
-            font-size: 26px;
-            font-weight:bold;
-            background-color: rgb(255, 255, 255);
-    }
-
     #message {
         position: absolute;
         display: none;
@@ -60,6 +52,22 @@
         left: 320px;
         font-weight: bold;
         font-size: 25px;
+    }
+
+    #home-button {
+      position: absolute;
+        top:390px;
+        left: 50px;
+        height: 50px;
+        width: 50px;
+    }
+    
+    #reload-button {
+      position: absolute;
+        top:390px;
+        left: 101px;
+        height: 50px;
+        width: 50px;
     }
 
     </style>
@@ -150,7 +158,8 @@
         <h1>RFID Write</h1>
         <p>Please scan your badge to write it</p>
         <button id="myButton" onclick="writeRFID()">Scan</button>
-        <button id="return" onclick="goHome()">Return</button>
+        <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
+        <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
     </div>
 </body>

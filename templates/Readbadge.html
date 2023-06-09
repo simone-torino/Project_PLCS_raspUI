@@ -54,6 +54,25 @@
         font-weight: bold;
         font-size: 25px;
     }
+
+    #home-button {
+      position: absolute;
+        top:390px;
+        left: 50px;
+        height: 50px;
+        width: 50px;
+         background-color: rgb(255, 255, 255);
+    }
+    
+    #reload-button {
+      position: absolute;
+        top:390px;
+        left: 101px;
+        height: 50px;
+        width: 50px;
+        background-color: rgb(255, 255, 255);
+    }
+
   </style>
   <script>
     function sleep(ms) {
@@ -148,6 +167,8 @@
         <h1>RFID Login</h1>
         <p>Please scan your RFID card</p>
         <button id="myButton" onclick="scanRFID()">Scan</button>
+        <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
+        <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
   </div>
 </body>
