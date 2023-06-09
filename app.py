@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import pymysql
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
@@ -31,8 +31,38 @@ def rfid_write(code):
 
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
-def read_route():
-    return read()
+def read():
+    if request.method == "POST":
+        # Check if the RFID code is empty
+        rfid_code = "00"
+        empty = str("00")
+        print(empty)
+        rfid_code = str(rfid_code)
+        print(rfid_code)
+
+        # Empty RFID code, display numeric keypad for authentication
+        if rfid_code == empty:
+            print("Returning keypad")
+            return redirect(url_for('keypad'))
+
+        # Non-empty RFID code, check if it exists in the database
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
+        row_badge = cursor.fetchone()
+
+        if row_badge is None:
+            # The RFID code was not found in the database
+            response = {'success': False}
+            return jsonify(response)
+        else:
+            # The RFID code was found
+            response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
+            return jsonify(response)
+
+    # GET request, render the page
+    return render_template('Readbadge.html')
 
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
@@ -63,38 +93,7 @@ def write():
     # GET request, render the page    
     return render_template('Writebadge.html')
 
-def read():
-    if request.method == "POST":
-        # Check if the RFID code is empty
-        rfid_code = "00"
-        empty = str("00")
-        print(empty)
-        rfid_code = str(rfid_code)
-        print(rfid_code)
 
-        # Empty RFID code, display numeric keypad for authentication
-        if rfid_code == empty:
-            print("Returning keypad")
-            return keypad()
-
-        # Non-empty RFID code, check if it exists in the database
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
-        row_badge = cursor.fetchone()
-
-        if row_badge is None:
-            # The RFID code was not found in the database
-            response = {'success': False}
-            return jsonify(response)
-        else:
-            # The RFID code was found
-            response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
-            return jsonify(response)
-
-    # GET request, render the page
-    return render_template('Readbadge.html')
 
 def check_otp(inserted_otp):
     conn = get_db()
