@@ -75,7 +75,10 @@
     function sendPostRequest() {
       fetch('/', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data: 'data' })
       })
       .then(response => {
         if (response.ok) {
