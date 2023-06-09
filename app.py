@@ -38,8 +38,6 @@ def read():
         empty = str("00")
         rfid_code = str(rfid_code)
         print(rfid_code)
-        rfid_code = rfid_code[1:]
-        print(rfid_code)
 
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
@@ -54,7 +52,11 @@ def read():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
+        cursor.execute('SELECT badge_id FROM people WHERE first_name = "Muccio"')
+        mucciobadge = cursor.fetchone()
+        print(mucciobadge)
+
+        cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
 
         if row_badge is None:
