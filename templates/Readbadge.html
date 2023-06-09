@@ -105,16 +105,28 @@
         // Handle any errors that occurred during the request
         if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
           var messageDiv = document.getElementById("message");
-          messageDiv.innerHTML = "NetworkError when attempting to fetch resource.";
-          messageDiv.style.display = "block";
+          displayError(2);
         } else {
         console.log(error);
         
         var messageDiv = document.getElementById("message");
-        messageDiv.innerHTML = "Request failed";
-        messageDiv.style.display = "block";
+        displayError(1);
         }
       });
+    }
+
+    async function displayError(err_id) {
+        var messageDiv = document.getElementById("message");
+        
+        if (err_id == 1){
+            messageDiv.innerHTML = "Request failed"; 
+        }else{
+            messageDiv.innerHTML = "NetworkError when<br>attempting to fetch resource";
+        }
+        messageDiv.style.display = "block";
+        //Reset message after 3s
+        await sleep(3000);
+        messageDiv.innerHTML = "";
     }
     
     async function displayMessage(isSuccess, name, surname) {
