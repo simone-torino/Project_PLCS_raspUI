@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session
 import pymysql
 from mfrc522 import SimpleMFRC522
-from datetime import datetime, timedelta
-import re
+from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'melanzana'
 
 # MySQL configuration
 mysql_host = '192.168.80.16'
@@ -34,6 +34,7 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read():
+    session.clear()
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
@@ -56,7 +57,6 @@ def read():
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
-        print(row_badge)
 
         if row_badge is None:
             # The RFID code was not found in the database
@@ -79,6 +79,9 @@ def keypad():
     if request.method == 'POST':
         print("keypad POST")
         inserted_code = request.form.get('code')
+
+        session['OTP'] = inserted_code
+
         print("code from html: ", inserted_code)
         result = check_otp(inserted_code)
         print("keypad POST, OTP checked")
@@ -102,19 +105,25 @@ def keypad():
 @app.route('/write', methods=['GET', 'POST'])
 def write():
     if request.method == 'POST':
-        badge = get_badge()
+
+        # Get previously inserted OTP from the session
+        inserted_otp = session.get('OTP')
+
+        # Retrieve from the database the badge code that corresponds to the OTP 
+        badge = get_badge(inserted_otp)
 
         if(badge == 'ERROR: wrong otp'):
+            print("Can't write card")
             response = {'success' : False}
             return jsonify(response)
+        else:
+            rfid_write(badge)
+            ("Badge written:")
+            print(badge)
+
+            response = {'success': True}
+            return jsonify(response)      
         
-        rfid_write(badge)
-        print("Badge written:")
-        print(badge)
-
-        response = {'success': True}
-        return jsonify(response)
-
     # GET request, render the page    
     return render_template('Writebadge.html')
 
@@ -124,12 +133,15 @@ def check_otp(inserted_otp):
     conn = get_db()
     cursor = conn.cursor()
 
+    # Fetch all the OTPs present in the database
     cursor.execute('SELECT otp_code, otp_expiration FROM invitations')
     conn.commit()
     rows = cursor.fetchall()
     cursor.close()
 
     flag = 0
+
+    # Validate the code to be compliant with database types
     inserted_otp = str(inserted_otp)
     inserted_otp = inserted_otp[:6]
     print(inserted_otp)
@@ -138,6 +150,7 @@ def check_otp(inserted_otp):
         print(row[0], " ", row[1])
         if inserted_otp == str(row[0]): 
             if datetime.now() < row[1]:
+                # OTP found in the database
                 flag = 1
             else:
                 print("OTP expired on ", row[1])
@@ -148,20 +161,23 @@ def check_otp(inserted_otp):
     else:
         return 'OTP - CORRECT'
 
-def get_badge():
-    inserted_otp = "some_otp"
+def get_badge(inserted_otp):
     conn = get_db()
     cursor = conn.cursor()
 
+    # CHeck if the inserted otp is present in the id_invitation table
     cursor.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
     idInv = cursor.fetchone()
     if idInv is None:
+        # If it's not probably something's wrong
         return 'ERROR: wrong otp'
     else:
+        # If the OTP is found fetch the correspondent email
         cursor.execute('SELECT email FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
         row_email = cursor.fetchone()
         email = row_email[0]
 
+        # The email is used to retrieve the badge_id assigned at the registration
         cursor.execute('SELECT badge_id FROM people WHERE email = %s', (str(email)))
         badge = cursor.fetchone()
         badge = badge[0]
