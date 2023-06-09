@@ -73,12 +73,16 @@
     </style>
 </head>
 <script>
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-    function writeRFID() {
+    async function writeRFID() {
         var button = document.getElementById("myButton");
         if (button.innerHTML === "Scan") {
             button.innerHTML = "Scanning...";
             sendPostRequest();  
+            await sleep(3000);
             button.innerHTML = "Scan";
         } else {
             button.innerHTML = "Scan";
@@ -158,7 +162,7 @@
     <div class="container">
         <h1>RFID Write</h1>
         <p>Please scan your badge to write it</p>
-        <button id="myButton" onclick="writeRFID()">Scan</button>
+        <button id="myButton" onclick="writeRFID()">SCAN</button>
         <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>

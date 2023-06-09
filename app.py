@@ -80,8 +80,7 @@ def keypad():
         print("keypad POST")
         inserted_code = request.form.get('code')
 
-        session['OTP'] = inserted_code
-
+    
         print("code from html: ", inserted_code)
         result = check_otp(inserted_code)
         print("keypad POST, OTP checked")
@@ -146,6 +145,10 @@ def check_otp(inserted_otp):
     inserted_otp = inserted_otp[:6]
     print(inserted_otp)
 
+    # After validation save in session
+    session['OTP'] = inserted_otp
+
+
     for row in rows:
         print(row[0], " ", row[1])
         if inserted_otp == str(row[0]): 
@@ -164,10 +167,11 @@ def check_otp(inserted_otp):
 def get_badge(inserted_otp):
     conn = get_db()
     cursor = conn.cursor()
+    print(inserted_otp)
 
-    # CHeck if the inserted otp is present in the id_invitation table
+    # CHeck if the inserted otp is present in the invitations table
     cursor.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
-    idInv = cursor.fetchone()
+    idInv = cursor.fetchone() #TODO: this is always none
     if idInv is None:
         # If it's not probably something's wrong
         return 'ERROR: wrong otp'
