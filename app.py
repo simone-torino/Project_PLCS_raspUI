@@ -36,27 +36,46 @@ def read_route():
 
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
-def keypad_route():
-    return keypad()
+def keypad():
+    if request.method == 'POST':
+        inserted_code = request.form.get('code-input')
+        result = check_otp(inserted_code)
+
+        if result == 'OTP - CORRECT':
+            #response = {'success': True}
+            return write()
+        else:
+            response = {'success': False}
+            return jsonify(response)
+
+    # GET request, render the page
+    return render_template('keypad.html')
 
 # Route for write page
 @app.route('/write', methods=['GET', 'POST'])
-def write_route():
-    return write()
+def write():
+    if request.method == 'POST':
+        badge = get_badge()
+        rfid_write(badge)
+        print("Badge written:")
+        print(badge)
+
+    # GET request, render the page    
+    return render_template('Writebadge.html')
 
 def read():
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
-        print(rfid_code)
         empty = str("00")
         print(empty)
         rfid_code = str(rfid_code)
+        print(rfid_code)
 
         # Empty RFID code, display numeric keypad for authentication
-        if True:
+        if rfid_code == empty:
             print("Returning keypad")
-            return keypad_route()
+            return keypad()
 
         # Non-empty RFID code, check if it exists in the database
         conn = get_db()
@@ -76,31 +95,6 @@ def read():
 
     # GET request, render the page
     return render_template('Readbadge.html')
-
-def keypad():
-    if request.method == 'POST':
-        inserted_code = request.form.get('code-input')
-        result = check_otp(inserted_code)
-
-        if result == 'OTP - CORRECT':
-            #response = {'success': True}
-            return write_route()
-        else:
-            response = {'success': False}
-            return jsonify(response)
-
-    # GET request, render the page
-    return render_template('keypad.html')
-
-def write():
-    if request.method == 'POST':
-        badge = get_badge()
-        rfid_write(badge)
-        print("Badge written:")
-        print(badge)
-
-    # GET request, render the page    
-    return render_template('Writebadge.html')
 
 def check_otp(inserted_otp):
     conn = get_db()
