@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from flask_mysqldb import MySQL
+import pymysql
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
@@ -12,8 +12,9 @@ mysql_user = 'pi'
 mysql_password = '123'
 mysql_db = 'dac'
 
-#inizializzazione del database MySQL
-mysql = MySQL(app)
+# Establish MySQL connection
+def get_db():
+    return pymysql.connect(host=mysql_host, user=mysql_user, password=mysql_password, db=mysql_db)
 
 reader = SimpleMFRC522()
 
@@ -38,26 +39,24 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read_route():
-    return read(mysql)
+    return read()
 
-def read(mysql):
+def read():
     if request.method == "POST":
         # Check if the RFID code is empty
         rfid_code = rfid_read()
         if not rfid_code:
             # Empty RFID code, display numeric keypad for authentication
             return keypad_route()
-        
-        #Non-empty RFID code, check if it exists in the database
-        conn = mysql.connection
-        conn.begin()
-        cur = conn.cursor()
 
-        cur.execute('SELECT * FROM people WHERE badge_id = %s', [str(rfid_code)])
-        conn.commit()
-        row_badge = cur.fetchone()
-        
-        if row_badge == None:
+        # Non-empty RFID code, check if it exists in the database
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
+        row_badge = cursor.fetchone()
+
+        if row_badge is None:
             # The RFID code was not found in the database
             response = {'success': False}
             return jsonify(response)
@@ -72,9 +71,9 @@ def read(mysql):
 
 @app.route('/keypad', methods=["GET", "POST"])
 def keypad_route():
-    return keypad(mysql)
+    return keypad()
 
-def keypad(mysql):
+def keypad():
     if request.method == 'POST':
         inserted_code = request.form.get('code-input')
         result = check_otp(mysql,inserted_code)
@@ -89,31 +88,33 @@ def keypad(mysql):
     # GET request, render the page
     return render_template('keypad.html')
 
-@app.route('/write', methods = ['GET','POST'])
+@app.route('/write', methods=['GET', 'POST'])
 def write_route():
-    return write(mysql)
+    return write()
 
-def write(mysql):
+def write():
     if request.method == 'POST':
         badge = get_badge()
         rfid_write(badge)
-        
+        print("Badge written:")
+        print(badge)
+
     # GET request, render the page    
     return render_template('Writebadge.html')
 
 if __name__ == '__main__':
     app.run()
 
+def check_otp(inserted_code):
+    conn = get_db()
+    cursor = conn.cursor()
+    conn = get_db()
+    cursor = conn.cursor()
 
-def check_otp(mysql,inserted_code):
-    conn = mysql.connection
-    conn.begin()
-    cur = conn.cursor()
-
-    cur.execute('SELECT otp_code, otp_expiration FROM invitations')
+    cursor.execute('SELECT otp_code, otp_expiration FROM invitations')
     conn.commit()
-    rows = cur.fetchall()
-    cur.close()
+    rows = cursor.fetchall()
+    cursor.close()
 
     flag = 0
 
@@ -122,33 +123,30 @@ def check_otp(mysql,inserted_code):
             flag = 1
 
     if flag == 0:
-         # L'OTP code inserito è errato o scaduto
-        return ("OTP - ERROR")
+         # The entered OTP code is incorrect or expired
+        return "OTP - ERROR"
     else:
-        return('OTP - CORRECT')
+        return 'OTP - CORRECT'
 
 
-def get_badge(mysql, inserted_otp):
-    conn = mysql.connection
-    conn.begin()
-    cur = conn.cursor()
+def get_badge():
+    inserted_otp = "some_otp"
+    conn = get_db()
+    cursor = conn.cursor()
 
-    cur.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', [str(inserted_otp)])
-    conn.commit()
-    idInv = cur.fetchone()
-    if idInv == None:
-        return('ERROR: wrong otp')
+    cursor.execute('SELECT id_invitation FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
+    idInv = cursor.fetchone()
+    if idInv is None:
+        return 'ERROR: wrong otp'
     else:
-        cur.execute('SELECT email FROM invitations WHERE otp_code = %s', [str(inserted_otp)])
-        conn.commit()
-        row_email = cur.fetchone()
+        cursor.execute('SELECT email FROM invitations WHERE otp_code = %s', (str(inserted_otp)))
+        row_email = cursor.fetchone()
         email = row_email[0]
 
-        cur.execute('SELECT badge_id FROM people WHERE email = %s', [str(email)])
-        conn.commit()
-        badge = cur.fetchone()
+        cursor.execute('SELECT badge_id FROM people WHERE email = %s', (str(email)))
+        badge = cursor.fetchone()
         badge = badge[0]
 
-        cur.close()
+        cursor.close()
 
-        return(badge)
+        return badge
