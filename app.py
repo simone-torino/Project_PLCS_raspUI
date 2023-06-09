@@ -62,7 +62,7 @@ def read():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
+        cursor.execute('SELECT * FROM people WHERE badge_id = %s', (str(rfid_code)))
         row_badge = cursor.fetchone()
 
         if row_badge is None:
