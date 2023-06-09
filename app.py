@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 import pymysql
-import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
 
