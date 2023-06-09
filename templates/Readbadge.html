@@ -64,8 +64,7 @@
       var button = document.getElementById("myButton");
       if (button.innerHTML === "Scan") {
         button.innerHTML = "Scanning...";
-        sendPostRequest();
-        await sleep(2000);
+        await sendPostRequest();  
         button.innerHTML = "Scan";
       } else {
         button.innerHTML = "Scan";
@@ -121,7 +120,7 @@
         if (err_id == 1){
             messageDiv.innerHTML = "Request failed"; 
         }else{
-            messageDiv.innerHTML = "NetworkError when<br>attempting to fetch resource";
+            messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
         }
         messageDiv.style.display = "block";
         //Reset message after 3s

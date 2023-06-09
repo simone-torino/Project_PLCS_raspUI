@@ -103,9 +103,17 @@ def keypad():
 def write():
     if request.method == 'POST':
         badge = get_badge()
+
+        if(badge == 'ERROR: wrong otp'):
+            response = {'success' : False}
+            return jsonify(response)
+        
         rfid_write(badge)
         print("Badge written:")
         print(badge)
+
+        response = {'success': True}
+        return jsonify(response)
 
     # GET request, render the page    
     return render_template('Writebadge.html')
