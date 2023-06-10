@@ -14,7 +14,11 @@ mysql_db = 'dac'
 
 # Establish MySQL connection
 def get_db():
-    return pymysql.connect(host=mysql_host, user=mysql_user, password=mysql_password, db=mysql_db)
+    try:
+        return pymysql.connect(host=mysql_host, user=mysql_user, password=mysql_password, db=mysql_db)
+    except pymysql.Error as e:
+        print("Error connection to the database:", e)
+        return None
 
 reader = SimpleMFRC522()
 
@@ -53,6 +57,9 @@ def read():
 
         # Non-empty RFID code, check if it exists in the database
         conn = get_db()
+        if(conn == None):
+            response = {'Err_db' : True}
+            return jsonify(response)
         cursor = conn.cursor()
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
@@ -137,8 +144,9 @@ def write():
 
 def check_otp(inserted_otp):
     conn = get_db()
-    cursor = conn.cursor()
-    conn = get_db()
+    if(conn == None):
+        response = {'Err_db' : True}
+        return jsonify(response)
     cursor = conn.cursor()
 
     # Fetch all the OTPs present in the database
@@ -175,6 +183,9 @@ def check_otp(inserted_otp):
 
 def get_badge(inserted_otp):
     conn = get_db()
+    if(conn == None):
+        response = {'Err_db' : True}
+        return jsonify(response)
     cursor = conn.cursor()
     print(inserted_otp)
 

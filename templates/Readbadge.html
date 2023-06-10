@@ -144,6 +144,9 @@
                 })
                 .then(data => {
 
+                    if (data.Err_db) {
+                        displayError(3)
+                    }
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
                     if (isEmpty) {
@@ -171,12 +174,18 @@
         async function displayError(err_id) {
             var messageDiv = document.getElementById("message");
 
-            if (err_id == 1) {
-                messageDiv.innerHTML = "Request failed<br>Check internet connection";
-            } else {
-                messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
+            switch (err_id) {
+                case 1:
+                    messageDiv.innerHTML = "Request failed<br>Check internet connection";
+                case 2:
+                    messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
+                case 3:
+                    messageDiv.innerHTML = "Error in<br>database connection";
+                default:
+                    messageDiv.innerHTML = "Generic error";
             }
             messageDiv.style.display = "block";
+            messageDiv.style.color = "red";
             //Reset message after 3s
             await sleep(3000);
             messageDiv.innerHTML = "";
