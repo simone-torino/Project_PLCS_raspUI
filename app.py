@@ -71,8 +71,8 @@ def read():
             response = {'dbsuccess': True, 'name': row_badge[3],
                         'surname' : row_badge[4],
                         'tssuccess' : True, #TODO: gestire il caso in cui non riesce a registrare la data di accesso
-                        'ts_in' :  datetime.now(),
-                        'ts_out' : datetime.now()}
+                        'ts_in' :  datetime.now().strftime("%H:%M:%S") ,
+                        'ts_out' : datetime.now().strftime("%H:%M:%S") }
             return jsonify(response)
 
     # GET request, render the page

@@ -73,7 +73,7 @@
         #message {
             position: absolute;
             display: none;
-            top: 250px;
+            top: 230px;
             left: 60px;
             font-weight: bold;
             font-size: 25px;
@@ -189,9 +189,9 @@
                 messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
                 if (data.tssuccess) {
                     if (isEntering) {
-                        messageDiv.innerHTML += "<br>Clock_in time: " + data.ts_in;
+                        messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
                     } else {
-                        messageDiv.innerHTML += "<br>Clock_out time: " + data.ts_out;
+                        messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                     }
                 } else {
                     messageDiv.style.color = "red";
