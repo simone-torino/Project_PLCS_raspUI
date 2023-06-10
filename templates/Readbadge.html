@@ -207,10 +207,9 @@
             messageDiv.innerHTML = "";
         }
 
-        var datetimeDiv = document.getElementById("datetime");
-
         // Function to update the datetime
         function updateDatetime() {
+            var datetimeDiv = document.getElementById("datetime");
             var currentDate = new Date();
             var datetimeString = currentDate.toLocaleString(); // Convert the date to a localized string
             console.log(datetimeString);
