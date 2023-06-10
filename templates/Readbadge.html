@@ -1,177 +1,240 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-   <title>RFID Login</title>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>RFID Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 460px;
-        width: 790px;
-        font-family: Arial, sans-serif;
-        border: 1px solid #c3c3c3;
-        background-color: rgb(255, 154, 39);
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    h1 {
-        font-size: 54px;
-        margin-top: -80px;
-    }
-
-    p {
-        font-size: 34px;
-        margin-bottom: 150px;
-    }
-
-    #read-button {
-        width: 300px;
-        height: 150px;
-        font-size: 40px;
-        font-weight: bold;
-        background-color: #00005f;
-        color: #ffffff;
-        border: none;
-        border-radius: 40px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        position: absolute;
-        top: 280px;
-        left: 400px;
-    }
-
-    #read-button:hover {
-        background-color: #0040b6;
-    }
-    
-    #message {
-        position: absolute;
-        display: none;
-        top: 310px;
-        left: 60px;
-        font-weight: bold;
-        font-size: 25px;
-    }
-
-    #home-button {
-      position: absolute;
-        top:390px;
-        left: 50px;
-        height: 50px;
-        width: 50px;
-    }
-    
-    #reload-button {
-      position: absolute;
-        top:390px;
-        left: 101px;
-        height: 50px;
-        width: 50px;
-    }
-
-  </style>
-  <script>
-    
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function scanRFID() {
-      var button = document.getElementById("read-button");
-      if (button.innerHTML === "SCAN") {
-        button.innerHTML = "SCANNING...";
-        sendPostRequest();  
-        await sleep(3000);
-        button.innerHTML = "SCAN";
-      } else {
-        button.innerHTML = "SCAN";
-      }
-    }
-    
-    function sendPostRequest() {
-      fetch('/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ data: 'data' })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Post request failed.');
-        }
-      })
-      .then(data => {
-
-        // If the card is empty redirect to the keypad
-        const isEmpty = data.empty;
-        if(isEmpty){
-            window.location.href = "/keypad";
-        }else{
-            // Update the isSuccess variable based on the server response
-
-            const isSuccess = data.success;
-            displayMessage(isSuccess, data.name, data.surname);
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 460px;
+            width: 790px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #c3c3c3;
+            background-color: rgb(255, 154, 39);
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-      })
-      .catch(error => {
-        // Handle any errors that occurred during the request
-        if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
-          var messageDiv = document.getElementById("message");
-          displayError(2);
-        } else {
-        console.log(error);
-        
-        var messageDiv = document.getElementById("message");
-        displayError(1);
+        h1 {
+            font-size: 54px;
+            margin-top: -80px;
         }
-      });
-    }
 
-    async function displayError(err_id) {
-        var messageDiv = document.getElementById("message");
-        
-        if (err_id == 1){
-            messageDiv.innerHTML = "Request failed"; 
-        }else{
-            messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
+        p {
+            font-size: 34px;
+            margin-bottom: 150px;
+            margin-top: -10px;
         }
-        messageDiv.style.display = "block";
-        //Reset message after 3s
-        await sleep(3000);
-        messageDiv.innerHTML = "";
-    }
-    
-    async function displayMessage(isSuccess, name, surname) {
-        var messageDiv = document.getElementById("message");
-        
-        if (isSuccess){
-            messageDiv.innerHTML = "Welcome back<br>" + name + " " + surname; 
-        }else{
-            messageDiv.innerHTML = "Badge not found<br>in the database";
+
+        #readin-button {
+            width: 150px;
+            height: 150px;
+            font-size: 40px;
+            font-weight: bold;
+            background-color: #01a701;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 230px;
+            left: 350px;
         }
-        messageDiv.style.display = "block";
-        //Reset message after 3s
-        await sleep(3000);
-        messageDiv.innerHTML = "";
-    }
-  </script>
+
+        #readin-button:hover {
+            background-color: #00e200;
+        }
+
+        #readout-button {
+            width: 150px;
+            height: 150px;
+            font-size: 40px;
+            font-weight: bold;
+            background-color: #bb0000;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 230px;
+            left: 501px;
+        }
+
+        #readout-button:hover {
+            background-color: #f30000;
+        }
+
+        #message {
+            position: absolute;
+            display: none;
+            top: 250px;
+            left: 60px;
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        #datetime {
+            position: absolute;
+            top: 400px;
+            left: 160px;
+            height: 50px;
+            width: 50px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        #reload-button {
+            position: absolute;
+            top: 390px;
+            left: 101px;
+            height: 50px;
+            width: 50px;
+        }
+    </style>
+    <script>
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function scanRFIDin() {
+            var button = document.getElementById("readin-button");
+            if (button.innerHTML === "IN") {
+                button.innerHTML = "...";
+                sendPostRequest();
+                await sleep(3000);
+                button.innerHTML = "IN";
+            } else {
+                button.innerHTML = "IN";
+            }
+        }
+
+        async function scanRFIDout() {
+            var button = document.getElementById("readout-button");
+            if (button.innerHTML === "OUT") {
+                button.innerHTML = "...";
+                sendPostRequest();
+                await sleep(3000);
+                button.innerHTML = "OUT";
+            } else {
+                button.innerHTML = "OUT";
+            }
+        }
+
+        function sendPostRequest() {
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data: 'data' })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Post request failed.');
+                    }
+                })
+                .then(data => {
+
+                    // If the card is empty redirect to the keypad
+                    const isEmpty = data.empty;
+                    if (isEmpty) {
+                        window.location.href = "/keypad";
+                    } else {
+                        // Update the isSuccess variable based on the server response
+
+                        const isSuccess = data.success;
+                        displayMessage(isSuccess, data.name, data.surname, data.ts_in, data.ts_out);
+                    }
+
+                })
+                .catch(error => {
+                    // Handle any errors that occurred during the request
+                    if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
+                        var messageDiv = document.getElementById("message");
+                        displayError(2);
+                    } else {
+                        console.log(error);
+
+                        var messageDiv = document.getElementById("message");
+                        displayError(1);
+                    }
+                });
+        }
+
+        async function displayError(err_id) {
+            var messageDiv = document.getElementById("message");
+
+            if (err_id == 1) {
+                messageDiv.innerHTML = "Request failed";
+            } else {
+                messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
+            }
+            messageDiv.style.display = "block";
+            //Reset message after 3s
+            await sleep(3000);
+            messageDiv.innerHTML = "";
+        }
+
+        async function displayMessage(isSuccess, name, surname) {
+            var messageDiv = document.getElementById("message");
+
+            if (isSuccess) {
+                messageDiv.innerHTML = "Welcome back<br>" + name + " " + surname;
+                if (data.ts_in) {
+                    messageDiv.innerHTML += "<br>Clock_in time: " + data.ts_in;
+                } else if (data.ts_out) {
+                    messageDiv.innerHTML += "<br>Clock_out time: " + data.ts_out;
+                } else {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerHTML += "<br>Error: can't register access time"
+                }
+
+            } else {
+                messageDiv.innerHTML = "Badge not found<br>in the database";
+            }
+            messageDiv.style.display = "block";
+            //Reset message after 3s
+            await sleep(3000);
+            messageDiv.innerHTML = "";
+        }
+
+        var datetimeDiv = document.getElementById("datetime");
+
+        // Function to update the datetime
+        function updateDatetime() {
+            var currentDate = new Date();
+            var datetimeString = currentDate.toLocaleString(); // Convert the date to a localized string
+
+            datetimeDiv.innerHTML = datetimeString;
+        }
+
+        // Update the datetime initially
+        updateDatetime();
+
+        // Update the datetime every second
+        setInterval(updateDatetime, 1000);
+    </script>
 </head>
+
 <body>
     <div class="container">
         <h1>RFID Login</h1>
-        <p>You are accessing <b>Dipartimento Elettronica</b><br>Please scan your RFID card</p>
-        <button id="read-button" onclick="scanRFID()">SCAN</button>
-        <button id="home-button" class="fas fa-home" onclick="goHome()"></button>
+        <p>You are in <b>Dipartimento Elettronica</b><br>Please scan your RFID card</p>
+        <button id="readin-button" onclick="scanRFIDin()">IN</button>
+        <button id="readout-button" onclick="scanRFIDout()">OUT</button>
+        <div id="datetime">&#128336</div>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
-  </div>
+    </div>
 </body>
+
 </html>
