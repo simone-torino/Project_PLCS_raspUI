@@ -207,6 +207,7 @@
             messageDiv.innerHTML = "";
         }
 
+        document.addEventListener("DOMContentLoaded", function() {
         // Function to update the datetime
         function updateDatetime() {
             var datetimeDiv = document.getElementById("datetime");
@@ -221,6 +222,7 @@
 
         // Update the datetime every second
         setInterval(updateDatetime, 1000);
+        });
     </script>
 </head>
 
