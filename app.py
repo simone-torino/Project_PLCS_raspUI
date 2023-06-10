@@ -68,7 +68,11 @@ def read():
             print("RFID found")
             # TODO: controlli su area
             # TODO: log dell'ora di accesso 
-            response = {'success': True, 'name': row_badge[3], 'surname' : row_badge[4]}
+            response = {'dbsuccess': True, 'name': row_badge[3],
+                        'surname' : row_badge[4],
+                        'tssuccess' : True, #TODO: gestire il caso in cui non riesce a registrare la data di accesso
+                        'ts_in' :  datetime.now(),
+                        'ts_out' : datetime.now()}
             return jsonify(response)
 
     # GET request, render the page

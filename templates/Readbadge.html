@@ -106,7 +106,7 @@
             var button = document.getElementById("readin-button");
             if (button.innerHTML === "IN") {
                 button.innerHTML = "...";
-                sendPostRequest();
+                sendPostRequest(True);
                 await sleep(3000);
                 button.innerHTML = "IN";
             } else {
@@ -118,7 +118,7 @@
             var button = document.getElementById("readout-button");
             if (button.innerHTML === "OUT") {
                 button.innerHTML = "...";
-                sendPostRequest();
+                sendPostRequest(False);
                 await sleep(3000);
                 button.innerHTML = "OUT";
             } else {
@@ -126,13 +126,14 @@
             }
         }
 
-        function sendPostRequest() {
+        // isEntering is true if the user has pressed the IN button
+        function sendPostRequest(isEntering) {
             fetch('/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ data: 'data' })
+                body: JSON.stringify({ data: 'data', isEntering: 'isEntering' })
             })
                 .then(response => {
                     if (response.ok) {
@@ -149,9 +150,7 @@
                         window.location.href = "/keypad";
                     } else {
                         // Update the isSuccess variable based on the server response
-
-                        const isSuccess = data.success;
-                        displayMessage(isSuccess, data.name, data.surname, data.ts_in, data.ts_out);
+                        displayMessage(isEntering, data);
                     }
 
                 })
@@ -173,7 +172,7 @@
             var messageDiv = document.getElementById("message");
 
             if (err_id == 1) {
-                messageDiv.innerHTML = "Request failed";
+                messageDiv.innerHTML = "Request failed<br>Check internet connection";
             } else {
                 messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
             }
@@ -183,43 +182,45 @@
             messageDiv.innerHTML = "";
         }
 
-        async function displayMessage(isSuccess, name, surname) {
+        async function displayMessage(isEntering, data) {
             var messageDiv = document.getElementById("message");
 
-            if (isSuccess) {
-                messageDiv.innerHTML = "Welcome back<br>" + name + " " + surname;
-                if (data.ts_in) {
-                    messageDiv.innerHTML += "<br>Clock_in time: " + data.ts_in;
-                } else if (data.ts_out) {
-                    messageDiv.innerHTML += "<br>Clock_out time: " + data.ts_out;
+            if (data.dbsuccess) {
+                messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
+                if (data.tssuccess) {
+                    if (isEntering) {
+                        messageDiv.innerHTML += "<br>Clock_in time: " + data.ts_in;
+                    } else {
+                        messageDiv.innerHTML += "<br>Clock_out time: " + data.ts_out;
+                    }
                 } else {
                     messageDiv.style.color = "red";
-                    messageDiv.innerHTML += "<br>Error: can't register access time"
+                    messageDiv.innerHTML = "<br>Error: can't register access time"
                 }
-
             } else {
                 messageDiv.innerHTML = "Badge not found<br>in the database";
             }
+
             messageDiv.style.display = "block";
-            //Reset message after 3s
-            await sleep(3000);
+            //Reset message after 5s
+            await sleep(5000);
             messageDiv.innerHTML = "";
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-        // Function to update the datetime
-        function updateDatetime() {
-            var datetimeDiv = document.getElementById("datetime");
-            var currentDate = new Date();
-            var datetimeString = currentDate.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); // Convert the date to a localized string
-            datetimeDiv.innerHTML = datetimeString;
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to update the datetime
+            function updateDatetime() {
+                var datetimeDiv = document.getElementById("datetime");
+                var currentDate = new Date();
+                var datetimeString = currentDate.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); // Convert the date to a localized string
+                datetimeDiv.innerHTML = datetimeString;
+            }
 
-        // Update the datetime initially
-        updateDatetime();
+            // Update the datetime initially
+            updateDatetime();
 
-        // Update the datetime every second
-        setInterval(updateDatetime, 1000);
+            // Update the datetime every second
+            setInterval(updateDatetime, 1000);
         });
     </script>
 </head>
