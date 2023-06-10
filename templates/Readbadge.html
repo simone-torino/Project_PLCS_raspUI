@@ -84,7 +84,6 @@
             top: 400px;
             left: 160px;
             height: 50px;
-            width: 50px;
             font-weight: bold;
             font-size: 24px;
         }
@@ -213,7 +212,6 @@
             var datetimeDiv = document.getElementById("datetime");
             var currentDate = new Date();
             var datetimeString = currentDate.toLocaleString(); // Convert the date to a localized string
-            console.log(datetimeString);
             datetimeDiv.innerHTML = datetimeString;
         }
 
@@ -232,7 +230,7 @@
         <p>You are in <b>Dipartimento Elettronica</b><br>Please scan your RFID card</p>
         <button id="readin-button" onclick="scanRFIDin()">IN</button>
         <button id="readout-button" onclick="scanRFIDout()">OUT</button>
-        <div id="datetime">&#128336</div>
+        <div id="datetime"></div>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
     </div>
