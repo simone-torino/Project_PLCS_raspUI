@@ -106,7 +106,7 @@
             var button = document.getElementById("readin-button");
             if (button.innerHTML === "IN") {
                 button.innerHTML = "...";
-                sendPostRequest(True);
+                sendPostRequest(true);
                 await sleep(3000);
                 button.innerHTML = "IN";
             } else {
@@ -118,7 +118,7 @@
             var button = document.getElementById("readout-button");
             if (button.innerHTML === "OUT") {
                 button.innerHTML = "...";
-                sendPostRequest(False);
+                sendPostRequest(false);
                 await sleep(3000);
                 button.innerHTML = "OUT";
             } else {
