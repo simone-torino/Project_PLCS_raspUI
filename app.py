@@ -200,7 +200,7 @@ def check_otp(inserted_otp):
     cursor = conn.cursor()
 
     # Fetch all the OTPs present in the database
-    cursor.execute('SELECT otp_code, otp_expiration FROM invitations')
+    cursor.execute('SELECT otp_code, otp_expiration_DAC FROM invitations')
     conn.commit()
     rows = cursor.fetchall()
     cursor.close()
