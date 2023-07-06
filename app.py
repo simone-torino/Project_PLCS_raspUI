@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, jsonify, session
 import pymysql
 from mfrc522 import SimpleMFRC522
 from datetime import datetime
+
+#alla raspberry viene associata una singola area_id
+raspberry_area_id = 1
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
@@ -67,20 +71,66 @@ def read():
 
         if row_badge is None:
             # The RFID code was not found in the database
-            response = {'success': False}
+            response = {'dbsuccess': False}
             print("RFID not found")
             return jsonify(response)
         else:
             # The RFID code was found
             print("RFID found")
-            # TODO: controlli su area
-            # TODO: log dell'ora di accesso 
-            response = {'dbsuccess': True, 'name': row_badge[3],
-                        'surname' : row_badge[4],
-                        'tssuccess' : True, #TODO: gestire il caso in cui non riesce a registrare la data di accesso
-                        'ts_in' :  datetime.now().strftime("%H:%M:%S") ,
-                        'ts_out' : datetime.now().strftime("%H:%M:%S") }
-            return jsonify(response)
+
+            #controlli su area
+            person_id = row_badge[0] #estraggo l'id della persona
+            company_id = row_badge[1] #estraggo l'id della compagnia
+            cursor.execute('SELECT area_id FROM person_areas WHERE person_id = %s', [str(person_id)]) #seleziono gli area_id della persona del badge
+            badges_area_id = cursor.fetchall()
+
+
+
+            #alla persona del badge non è associata alcuna area
+            if badges_area_id is None:
+                #scrivo nell'access_history che c'è stata una violazione
+                violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
+                cursor.commit()
+                response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]} #timestamp success --> significa che c'è stata una violazione
+                return jsonify(response)
+            
+            else:
+                badges_area_id = [x[0] for x in badges_area_id] #salvo gli area_id in un vettore
+                flag_badge = 0
+                #verifico se almeno uno di questi id corrisponde a quello dell'area del raspberry            
+                for badge_area_id in badges_area_id:
+                    if badge_area_id == raspberry_area_id:
+                        flag_badge = 1
+                #se esco dal loop senza che la risposta sia stata ritornata allora vuole dire che il badge non ha il permesso e segnalo una violazione
+                if flag_badge == 0:    
+                    violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
+                    cursor.commit()
+                    response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]}
+                    return jsonify(response)
+
+                #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
+
+                #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
+                cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
+                time_IN = cursor.fetchone()
+                
+                if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
+                    string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
+                    cursor.commit()
+                    response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                
+                else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
+                    cursor.execute('SELECT timestamp_OUT FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
+                    time_OUT = cursor.fetchone()
+                    if time_OUT is None:
+                        string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
+                        response = {'dbsuccess': True, 'tssuccess': True, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+
+                return jsonify(response)
 
     # GET request, render the page
     return render_template('Readbadge.html')
