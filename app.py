@@ -49,6 +49,9 @@ def read():
         rfid_code = str(rfid_code) # Convert to str to validate the comparison with empty
         rfid_code = rfid_code[:20] # Keep only the first 20 char since the read code is 48 long
         empty = str("                    ")
+
+        print(rfid_code)
+        print(len(rfid_code))
         
         # Empty RFID code, display numeric keypad for authentication
         if rfid_code == empty:
