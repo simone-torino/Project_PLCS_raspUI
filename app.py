@@ -5,7 +5,7 @@ from mfrc522 import SimpleMFRC522
 from datetime import datetime
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 1
+raspberry_area_id = 26
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
