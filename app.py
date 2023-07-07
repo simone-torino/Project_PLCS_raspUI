@@ -91,7 +91,7 @@ def read():
                 #scrivo nell'access_history che c'è stata una violazione
                 violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
-                cursor.commit()
+                conn.commit()
                 response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]} #timestamp success --> significa che c'è stata una violazione
                 return jsonify(response)
             
@@ -106,7 +106,7 @@ def read():
                 if flag_badge == 0:    
                     violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
-                    cursor.commit()
+                    conn.commit()
                     response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]}
                     return jsonify(response)
 
@@ -119,7 +119,7 @@ def read():
                 if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
                     string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
-                    cursor.commit()
+                    conn.commit()
                     response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                 
                 else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
@@ -128,6 +128,7 @@ def read():
                     if time_OUT is None:
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
+                        conn.commit()
                         response = {'dbsuccess': True, 'tssuccess': True, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
 
                 return jsonify(response)
