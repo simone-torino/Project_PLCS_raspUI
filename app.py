@@ -116,7 +116,7 @@ def read():
 
                 #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
 
-                isEntering = request.form.get('isEntering') #acquisisco il boolenano che mi dice se entro o esco
+                isEntering = request.form.get('isEntering') #acquisisco il booleano che mi dice se entro o esco
 
                 if isEntering is True:
                     #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
@@ -128,7 +128,7 @@ def read():
                         conn.commit()
                         response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
-                        response = {'dbsuccess': True, 'tssuccess': False, 'error button': True}
+                        response = {'dbsuccess': True, 'tssuccess': False, 'error_button': True} #se entro senza essere uscito prima
                 
                 else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
                     cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
@@ -141,7 +141,7 @@ def read():
                         conn.commit()
                         response = {'dbsuccess': True, 'tssuccess': False, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
-                        response = {'dbsuccess': True, 'tssuccess': False, 'error button': True}
+                        response = {'dbsuccess': True, 'tssuccess': False, 'error_button': True} #se esco senza essere entrato
 
                 return jsonify(response)
 

@@ -147,6 +147,10 @@
                     if (data.Err_db) {
                         displayError(3)
                     }
+
+                    if(data.error_button){
+                        displayError(4)
+                    }
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
                     if (isEmpty) {
@@ -183,6 +187,9 @@
                     break;
                 case 3:
                     messageDiv.innerHTML = "Error in<br>database connection";
+                    break;
+                case 4:
+                    messageDiv.innerHTML = "You must exit<br>before entering<br>or viceversa";
                     break;
                 default:
                     messageDiv.innerHTML = "Generic error";
