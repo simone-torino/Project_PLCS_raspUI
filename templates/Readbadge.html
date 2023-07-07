@@ -148,15 +148,8 @@
                         displayError(3);
                     }
 
-                    if(data.result == "goinfirst"){
-                        displayError(4);
-                    }else if(data.result == "gooutfirst"){
-                        displayError(5);
-                    }else if(display.result == "violation_noarea"){
-                        displayError(6);
-                    }else if(display.result == "violation"){
-                        displayError(7);
-                    }
+                    
+                    
                     
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
@@ -221,18 +214,23 @@
         async function displayMessage(isEntering, data) {
             var messageDiv = document.getElementById("message");
 
+            if(data.result == "goinfirst"){
+                displayError(4);
+            }else if(data.result == "gooutfirst"){
+                displayError(5);
+            }else if(display.result == "violation_noarea"){
+                displayError(6);
+            }else if(display.result == "violation"){
+                displayError(7);
+            }
+
             if (data.dbsuccess) {
                 messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
                 await sleep(2000);
-                if (data.tssuccess) {
-                    if (isEntering) {
-                        messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
-                    } else {
-                        messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
-                    }
+                if (isEntering) {
+                    messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
                 } else {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerHTML = "<br>Error: can't register<br>access time"
+                    messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                 }
             } else {
                 messageDiv.innerHTML = "Badge not found<br>in the database";
