@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'secretkey'
 
 # MySQL configuration
-mysql_host = '192.168.19.16'
+mysql_host = '192.168.41.16'
 mysql_user = 'pi'
 mysql_password = '123'
 mysql_db = 'dac'
