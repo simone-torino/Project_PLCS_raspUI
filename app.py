@@ -71,6 +71,7 @@ def read():
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
+        print(row_badge)
 
         if row_badge is None:
             # The RFID code was not found in the database
