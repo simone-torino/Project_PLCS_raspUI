@@ -116,24 +116,32 @@ def read():
 
                 #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
 
-                #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
-                cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
-                time_IN = cursor.fetchone()
-                
-                if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
-                    string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
-                    conn.commit()
-                    response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                isEntering = request.form.get('isEntering') #acquisisco il boolenano che mi dice se entro o esco
+
+                if isEntering is True:
+                    #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
+                    cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
+                    time_IN = cursor.fetchone()
+                    if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
+                        string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
+                        conn.commit()
+                        response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                    else:
+                        response = {'dbsuccess': True, 'tssuccess': False, 'error button': True}
                 
                 else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
+                    cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
+                    time_IN = cursor.fetchone()
                     cursor.execute('SELECT timestamp_OUT FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
                     time_OUT = cursor.fetchone()
-                    if time_OUT is None:
+                    if (time_OUT is None) and (time_IN != None) :
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
                         conn.commit()
-                        response = {'dbsuccess': True, 'tssuccess': True, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                        response = {'dbsuccess': True, 'tssuccess': False, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                    else:
+                        response = {'dbsuccess': True, 'tssuccess': False, 'error button': True}
 
                 return jsonify(response)
 
