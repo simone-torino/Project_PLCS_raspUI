@@ -96,7 +96,7 @@ def read():
                 violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
                 conn.commit()
-                response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]} #timestamp success --> significa che c'è stata una violazione
+                response = {'dbsuccess': True, 'result': 'violation_noarea', 'name': row_badge[3], 'surname': row_badge[4]} #timestamp success --> significa che c'è stata una violazione
                 return jsonify(response)
             
             else:
@@ -111,7 +111,7 @@ def read():
                     violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
                     conn.commit()
-                    response = {'dbsuccess': True, 'tssuccess': False, 'name': row_badge[3], 'surname': row_badge[4]}
+                    response = {'dbsuccess': True, 'result': 'violation', 'name': row_badge[3], 'surname': row_badge[4]}
                     return jsonify(response)
 
                 #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
@@ -126,9 +126,9 @@ def read():
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
                         conn.commit()
-                        response = {'dbsuccess': True, 'tssuccess': True, 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                        response = {'dbsuccess': True, 'result': 'success_in', 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
-                        response = {'dbsuccess': True, 'tssuccess': False, 'error_button': True} #se entro senza essere uscito prima
+                        response = {'dbsuccess': True, 'result': 'gooutfirst'} #se entro senza essere uscito prima
                 
                 else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
                     cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
@@ -139,9 +139,9 @@ def read():
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
                         conn.commit()
-                        response = {'dbsuccess': True, 'tssuccess': False, 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
+                        response = {'dbsuccess': True, 'result': 'success_out', 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
-                        response = {'dbsuccess': True, 'tssuccess': False, 'error_button': True} #se esco senza essere entrato
+                        response = {'dbsuccess': True, 'result': 'goinfirst'} #se esco senza essere entrato
 
                 return jsonify(response)
 

@@ -145,12 +145,19 @@
                 .then(data => {
 
                     if (data.Err_db) {
-                        displayError(3)
+                        displayError(3);
                     }
 
-                    if(data.error_button){
-                        displayError(4)
+                    if(data.result == "goinfirst"){
+                        displayError(4);
+                    }else if(data.result == "gooutfirst"){
+                        displayError(5);
+                    }else if(display.result == "violation_noarea"){
+                        displayError(6);
+                    }else if(display.result == "violation"){
+                        displayError(7);
                     }
+                    
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
                     if (isEmpty) {
@@ -189,7 +196,16 @@
                     messageDiv.innerHTML = "Error in<br>database connection";
                     break;
                 case 4:
-                    messageDiv.innerHTML = "You must exit<br>before entering<br>or viceversa";
+                    messageDiv.innerHTML = "You must enter<br>before exiting";
+                    break;
+                case 5:
+                    messageDiv.innerHTML = "You must exit<br>before entering";
+                    break;
+                case 6:
+                    messageDiv.innerHTML = "No areas assigned<br>to this badge";
+                    break;
+                case 7:
+                    messageDiv.innerHTML = "You can't open<br>this door";
                     break;
                 default:
                     messageDiv.innerHTML = "Generic error";
@@ -207,6 +223,7 @@
 
             if (data.dbsuccess) {
                 messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
+                await sleep(2000);
                 if (data.tssuccess) {
                     if (isEntering) {
                         messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
