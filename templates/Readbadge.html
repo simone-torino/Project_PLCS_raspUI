@@ -107,6 +107,7 @@
             if (button.innerHTML === "IN") {
                 button.innerHTML = "...";
                 sendPostRequest(true);
+                console.log("Entering")
                 await sleep(3000);
                 button.innerHTML = "IN";
             } else {
@@ -119,6 +120,7 @@
             if (button.innerHTML === "OUT") {
                 button.innerHTML = "...";
                 sendPostRequest(false);
+                console.log("Exiting")
                 await sleep(3000);
                 button.innerHTML = "OUT";
             } else {
@@ -133,7 +135,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ data: 'data', isEntering: 'isEntering' })
+                body: JSON.stringify({ isEntering: 'isEntering' })
             })
                 .then(response => {
                     if (response.ok) {
@@ -143,10 +145,11 @@
                     }
                 })
                 .then(data => {
+                    console.log("Data from post")
                     console.log(data.Err_db)
                     if (data.Err_db) {
                         displayError(3);
-                    }                    
+                    }
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
                     if (isEmpty) {
@@ -211,27 +214,27 @@
 
         async function displayMessage(isEntering, data) {
             var messageDiv = document.getElementById("message");
+            console.log("Displaying message")
             console.log(data.result)
 
-            if(data.result == "goinfirst"){
-                displayError(4);
-            }else if(data.result == "gooutfirst"){
-                displayError(5);
-            }else if(data.result == "violation_noarea"){
-                displayError(6);
-            }else if(data.result == "violation"){
-                displayError(7);
-            }
-
             if (data.dbsuccess) {
-                
-                if (isEntering) {
+
+                if (data.result == "goinfirst") {
+                    displayError(4);
+                } else if (data.result == "gooutfirst") {
+                    displayError(5);
+                } else if (data.result == "violation_noarea") {
+                    displayError(6);
+                } else if (data.result == "violation") {
+                    displayError(7);
+                } else if (data.result == "success_in") {
                     messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
                     messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
-                } else {
+                } else if (data.result == "success_out") {
                     messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                     messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                 }
+
             } else {
                 messageDiv.innerHTML = "Badge not found<br>in the database";
             }
