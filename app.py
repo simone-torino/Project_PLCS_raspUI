@@ -71,7 +71,6 @@ def read():
 
         cursor.execute('SELECT * FROM people WHERE badge_id = %s', rfid_code)
         row_badge = cursor.fetchone()
-        print(row_badge)
 
         if row_badge is None:
             # The RFID code was not found in the database
@@ -93,6 +92,7 @@ def read():
             #alla persona del badge non è associata alcuna area
             if badges_area_id is None:
                 #scrivo nell'access_history che c'è stata una violazione
+                print("Violazione noarea")
                 violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
                 conn.commit()
@@ -108,6 +108,7 @@ def read():
                         flag_badge = 1
                 #se esco dal loop senza che la risposta sia stata ritornata allora vuole dire che il badge non ha il permesso e segnalo una violazione
                 if flag_badge == 0:    
+                    print("Violazione standard")
                     violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(violation_time), str(1)])
                     conn.commit()
@@ -123,11 +124,13 @@ def read():
                     cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
                     time_IN = cursor.fetchone()
                     if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
+                        print("Ingresso")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
                         conn.commit()
                         response = {'dbsuccess': True, 'result': 'success_in', 'ts_in' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
+                        print("Errore ingresso")
                         response = {'dbsuccess': True, 'result': 'gooutfirst'} #se entro senza essere uscito prima
                 
                 else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
@@ -136,11 +139,13 @@ def read():
                     cursor.execute('SELECT timestamp_OUT FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
                     time_OUT = cursor.fetchone()
                     if (time_OUT is None) and (time_IN != None) :
+                        print("Uscita")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
                         conn.commit()
                         response = {'dbsuccess': True, 'result': 'success_out', 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
+                        print("Errore uscita")
                         response = {'dbsuccess': True, 'result': 'goinfirst'} #se esco senza essere entrato
 
                 return jsonify(response)
