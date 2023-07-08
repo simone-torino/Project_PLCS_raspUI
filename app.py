@@ -50,7 +50,7 @@ def read():
         rfid_code = rfid_code[:20] # Keep only the first 20 char since the read code is 48 long
         empty = str("                    ")
 
-        print(rfid_code)
+        print("Caratteri:", end=' ')
         print(len(rfid_code))
         
         # Empty RFID code, display numeric keypad for authentication
