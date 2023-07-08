@@ -150,10 +150,15 @@ def read():
                 else:
 
                     flag_timeOut = 0 # 1 c'è errore, 0 tutto apposto
-
+                    cnt = 0
+                    # conto quante righe con coppia ingresso e uscita valida ci sono
                     for x in range (0, len(time_IN)):
-                        if (time_OUT[x] != None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
-                            flag_timeOut = 1
+                        if (time_IN[x] != None) and (time_OUT[x] != None) :
+                            cnt += 1
+                    
+                    # se le righe valide sono uguali alla lunghezza dei vettori sto uscendo prima di entrare
+                    if(cnt == len(time_IN)):
+                        flag_timeOut = 1
 
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
                         print("Uscita")
