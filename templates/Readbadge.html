@@ -264,7 +264,7 @@
 <body>
     <div class="container">
         <h1>RFID Login</h1>
-        <p>You are in <b>Dipartimento Elettronica</b><br>Please scan your RFID card</p>
+        <p id="displayArea">You are in <b>{{ area_name }}</b><br>Please scan your RFID card</p>
         <button id="readin-button" onclick="scanRFIDin()">IN</button>
         <button id="readout-button" onclick="scanRFIDout()">OUT</button>
         <div id="datetime"></div>
