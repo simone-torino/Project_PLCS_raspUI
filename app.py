@@ -117,7 +117,8 @@ def read():
 
                 #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
 
-                isEntering = request.form.get('isEntering') #acquisisco il booleano che mi dice se entro o esco
+                #acquisisco il booleano che mi dice se entro o esco
+                isEntering = request.get_json().get('isEntering')
                 print("isEntering: ", end=' ')
                 print(isEntering)
 
