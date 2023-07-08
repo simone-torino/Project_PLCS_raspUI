@@ -152,9 +152,10 @@ def read():
                         response = {'dbsuccess': True, 'result': 'goinfirst'} #se esco senza essere entrato
 
                 return jsonify(response)
-
     # GET request, render the page
-    return render_template('Readbadge.html')
+    else:
+        area_name = get_area_name(raspberry_area_id)
+        return render_template('Readbadge.html', area_name = area_name)
 
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
@@ -280,6 +281,18 @@ def get_badge(inserted_otp):
         cursor.close()
 
         return badge
+    
+
+def get_area_name(area_id):
+    conn = get_db()
+    if(conn == None):
+        response = {'Err_db' : True}
+        return jsonify(response)
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT area_name FROM areas WHERE area_id = %s', area_id)
+    area_name = cursor.fetchone()
+    return area_name
 
 if __name__ == '__main__':
     app.run()
