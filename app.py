@@ -130,7 +130,7 @@ def read():
 
                 if isEntering: #seho premuto il bottone per entrare
 
-                    flag_timeIn = 0
+                    flag_timeIn = 0 # 1 c'è errore, 0 tutto apposto
 
                     for x in range (0, len(time_IN)): #per ogni indice dei log che ho trovato...
                         if ((time_IN[x] != None) and (time_OUT[x] is None)) : #significa che c'è stato un ingresso ma non un'uscita
@@ -149,10 +149,10 @@ def read():
                 
                 else:
 
-                    flag_timeOut = 0
+                    flag_timeOut = 0 # 1 c'è errore, 0 tutto apposto
 
                     for x in range (0, len(time_IN)):
-                        if (time_IN[x] is None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
+                        if (not ((time_IN[x] is None) and (time_OUT[x] is None))) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
                             flag_timeOut = 1
 
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
