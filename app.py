@@ -166,7 +166,7 @@ def read():
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
                         print("Uscita")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        cursor.execute('UPDATE access_history SET timestamp_OUT = %s WHERE person_id=%s AND company_id=%s AND area_id=%s AND timestamp_IN=%s',[str(string_time), str(person_id), str(company_id), str(raspberry_area_id), str(time_IN)])
+                        cursor.execute('UPDATE access_history SET timestamp_OUT = %s WHERE person_id=%s AND company_id=%s AND area_id=%s AND timestamp_IN=%s',[str(string_time), str(person_id), str(company_id), str(raspberry_area_id), str(time_IN[index])])
                         conn.commit()
                         response = {'dbsuccess': True, 'result': 'success_out', 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
