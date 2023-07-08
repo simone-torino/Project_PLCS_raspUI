@@ -151,8 +151,8 @@ def read():
 
                     flag_timeOut = 0 # 1 c'è errore, 0 tutto apposto
 
-                    #se i vettori hanno la stessa lunghezza significa che non sono entrato
-                    if (len(time_IN)) == (len(time_OUT)) : 
+                    for x in range (0, len(time_IN)):
+                        if (time_OUT[x] != None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
                             flag_timeOut = 1
 
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
