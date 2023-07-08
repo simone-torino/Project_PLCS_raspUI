@@ -90,7 +90,7 @@ def read():
 
 
             #alla persona del badge non è associata alcuna area
-            if badges_area_id is None:
+            if not badges_area_id:
                 #scrivo nell'access_history che c'è stata una violazione
                 print("Violazione noarea")
                 violation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -132,7 +132,7 @@ def read():
 
                     flag_timeIn = 0
 
-                    for x in time_IN: #per ogni indice dei log che ho trovato...
+                    for x in range (0, len(time_IN)): #per ogni indice dei log che ho trovato...
                         if ((time_IN[x] != None) and (time_OUT[x] is None)) : #significa che c'è stato un ingresso ma non un'uscita
                             flag_timeIn = 1
 
@@ -151,8 +151,8 @@ def read():
 
                     flag_timeOut = 0
 
-                    for x in time_IN:
-                        if (time_IN is None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
+                    for x in range (0, len(time_IN)):
+                        if (time_IN[x] is None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
                             flag_timeOut = 1
 
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
