@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, jsonify, session
 import pymysql
+import re
 from mfrc522 import SimpleMFRC522
 from datetime import datetime
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 27
+raspberry_area_id = 12
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
@@ -314,6 +315,7 @@ def get_area_name(area_id):
 
     cursor.execute('SELECT area_name FROM areas WHERE area_id = %s', area_id)
     area_name = cursor.fetchone()
+    area_name = re.sub(r'\W+', '', area_name)
     return area_name
 
 if __name__ == '__main__':
