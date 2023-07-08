@@ -151,10 +151,13 @@ def read():
 
                     flag_timeOut = 0 # 1 c'è errore, 0 tutto apposto
                     cnt = 0
+                    index = 0
                     # conto quante righe con coppia ingresso e uscita valida ci sono
                     for x in range (0, len(time_IN)):
                         if (time_IN[x] != None) and (time_OUT[x] != None) :
                             cnt += 1
+                        else:
+                            index = x 
                     
                     # se le righe valide sono uguali alla lunghezza dei vettori sto uscendo prima di entrare
                     if(cnt == len(time_IN)):
@@ -163,7 +166,7 @@ def read():
                     if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
                         print("Uscita")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
+                        cursor.execute('UPDATE access_history SET timestamp_OUT = %s WHERE person_id=%s, company_id=%s, area_id=%s, timestamp_IN=%s',[str(string_time), str(person_id), str(company_id), str(raspberry_area_id), str(time_IN[index])])
                         conn.commit()
                         response = {'dbsuccess': True, 'result': 'success_out', 'ts_out' :datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'name': row_badge[3], 'surname': row_badge[4] }
                     else:
