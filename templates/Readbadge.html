@@ -135,7 +135,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ isEntering: 'isEntering' })
+                body: JSON.stringify({ 'isEntering': isEntering })
             })
                 .then(response => {
                     if (response.ok) {
@@ -145,8 +145,6 @@
                     }
                 })
                 .then(data => {
-                    console.log("Data from post")
-                    console.log(data.Err_db)
                     if (data.Err_db) {
                         displayError(3);
                     }
