@@ -118,8 +118,9 @@ def read():
                 #log dell'ora di accesso: adesso sappiamo che il permesso c'è quindi scriviamo il log
 
                 isEntering = request.form.get('isEntering') #acquisisco il booleano che mi dice se entro o esco
+                print("isEntering: ", end=' ')
                 print(isEntering)
-                
+
                 if isEntering:
                     #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
                     cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])

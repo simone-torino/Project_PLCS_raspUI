@@ -135,7 +135,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ 'isEntering': isEntering })
+                body: JSON.stringify({ isEntering: isEntering })
             })
                 .then(response => {
                     if (response.ok) {
