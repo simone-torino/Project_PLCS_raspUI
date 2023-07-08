@@ -146,11 +146,7 @@
 
                     if (data.Err_db) {
                         displayError(3);
-                    }
-
-                    
-                    
-                    
+                    }                    
                     // If the card is empty redirect to the keypad
                     const isEmpty = data.empty;
                     if (isEmpty) {
@@ -206,9 +202,11 @@
             }
             messageDiv.style.display = "block";
             messageDiv.style.color = "#bb0000";
+
             //Reset message after 3s
             await sleep(3000);
             messageDiv.innerHTML = "";
+            messageDiv.style.color = "#000000";
         }
 
         async function displayMessage(isEntering, data) {
@@ -225,11 +223,12 @@
             }
 
             if (data.dbsuccess) {
-                messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
-                await sleep(2000);
+                
                 if (isEntering) {
+                    messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
                     messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
                 } else {
+                    messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                     messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                 }
             } else {
