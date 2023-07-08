@@ -121,12 +121,22 @@ def read():
                 isEntering = request.get_json().get('isEntering')
                 print("isEntering: ", end=' ')
                 print(isEntering)
+                
+                #per quella persona, per quell'area di quella compagnia, seleziono tutti i log di ingresso e uscita
+                cursor.execute('SELECT timestamp_IN, timestamp_OUT FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
+                timestamp= cursor.fetchall()
+                time_IN = [x[0] for x in timestamp] #vettore con tutti i timestamp di ingresso per quella persona, di quella compagnia per quell'area
+                time_OUT = [x[1] for x in timestamp] #vettore con tutti i timestamp di uscita per quella persona, di quella compagnia per quell'area
 
-                if isEntering:
-                    #se timestamp_IN non esiste per quell'area allora significa che devo scrivere il log di ingresso
-                    cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
-                    time_IN = cursor.fetchone()
-                    if time_IN is None: #significa che per quella persona, in quell'azienda per quell'area non c'è stato accesso, pertanto è un ingresso
+                if isEntering: #seho premuto il bottone per entrare
+
+                    flag_timeIn = 0
+
+                    for x in time_IN: #per ogni indice dei log che ho trovato...
+                        if ((time_IN[x] != None) and (time_OUT[x] is None)) : #significa che c'è stato un ingresso ma non un'uscita
+                            flag_timeIn = 1
+
+                    if flag_timeIn == 0:
                         print("Ingresso")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute("INSERT INTO access_history (person_id, company_id, area_id, timestamp_IN, is_violation) VALUES (%s, %s, %s, %s, %s)", [str(person_id), str(company_id), str(raspberry_area_id), str(string_time), str(0)])
@@ -135,13 +145,17 @@ def read():
                     else:
                         print("Errore ingresso")
                         response = {'dbsuccess': True, 'result': 'gooutfirst'} #se entro senza essere uscito prima
+
                 
-                else: #se trovo un timestamp in, devo però verificare che  il timestamp out sia vuoto, in quel caso significa che sto uscendo
-                    cursor.execute('SELECT timestamp_IN FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
-                    time_IN = cursor.fetchone()
-                    cursor.execute('SELECT timestamp_OUT FROM access_history WHERE person_id = %s AND company_id = %s AND area_id = %s', [str(person_id), str(company_id), str(raspberry_area_id)])
-                    time_OUT = cursor.fetchone()
-                    if (time_OUT is None) and (time_IN != None) :
+                else:
+
+                    flag_timeOut = 0
+
+                    for x in time_IN:
+                        if (time_IN is None) : #se tra tutti i timestamp trovati ce n'è uno che ha time_IN == None allora significa che voglio uscire prima di entrare
+                            flag_timeOut = 1
+
+                    if flag_timeOut == 0: #ok --> sto uscendo dopo essere entrato
                         print("Uscita")
                         string_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         cursor.execute('UPDATE access_history SET timestamp_OUT = %s',[str(string_time)])
