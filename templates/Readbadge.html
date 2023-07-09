@@ -69,6 +69,26 @@
         #readout-button:hover {
             background-color: #f30000;
         }
+        
+         #readotp-button {
+            width: 280px;
+            height: 50px;
+            font-size: 40px;
+            font-weight: bold;
+            background-color: #7286D3;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 381px;
+            left: 410px;
+        }
+
+        #readotp-button:hover {
+            background-color: #8EA7E9;
+        }
 
         #message {
             position: absolute;
@@ -154,7 +174,7 @@
                         window.location.href = "/keypad";
                     } else {
                         // Update the isSuccess variable based on the server response
-                        displayMessage(isEntering, data);
+                        displayMessage(data);
                     }
 
                 })
@@ -210,7 +230,7 @@
             messageDiv.style.color = "#000000";
         }
 
-        async function displayMessage(isEntering, data) {
+        async function displayMessage(data) {
             var messageDiv = document.getElementById("message");
             console.log("Displaying message")
             console.log(data.result)
@@ -242,6 +262,45 @@
             await sleep(5000);
             messageDiv.innerHTML = "";
         }
+        
+        async function scanRFIDotp() {
+            var button = document.getElementById("readotp-button");
+            if (button.innerHTML === "APP") {
+                button.innerHTML = "...";
+                sendPostRequest_app();
+                console.log("Otping")
+                await sleep(3000);
+                button.innerHTML = "APP";
+            } else {
+                button.innerHTML = "APP";
+            }
+        }
+        
+        function sendPostRequest_app(){
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ isApp: true })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Post request failed.');
+                    }
+                })
+                .then(data => {
+                     if (data.Err_db) {
+                        displayError(3);
+                    }
+                    displayMessage(data);
+                })
+                .catch(error => {
+    
+                });
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             // Function to update the datetime
@@ -267,6 +326,7 @@
         <p id="displayArea">You are in <b>{{ area_name }}</b><br>Please scan your RFID card</p>
         <button id="readin-button" onclick="scanRFIDin()">IN</button>
         <button id="readout-button" onclick="scanRFIDout()">OUT</button>
+        <button id="readotp-button" onclick="scanRFIDotp()">APP</button>
         <div id="datetime"></div>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
