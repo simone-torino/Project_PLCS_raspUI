@@ -44,10 +44,17 @@
             position: absolute;
             top: 230px;
             left: 400px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+
         }
 
         #readin-button:hover {
             background-color: #00e200;
+        }
+        
+        #readin-button:active {
+            top: 233px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
 
         #readout-button {
@@ -64,10 +71,17 @@
             position: absolute;
             top: 230px;
             left: 551px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+
         }
 
         #readout-button:hover {
             background-color: #f30000;
+        }
+        
+        #readout-button:active {
+            top: 233px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
         
          #readotp-button {
@@ -75,19 +89,26 @@
             height: 50px;
             font-size: 40px;
             font-weight: bold;
-            background-color: #7286D3;
+            background-color: #4b5fb1;
             color: #ffffff;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             position: absolute;
-            top: 381px;
+            top: 386px;
             left: 410px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+
         }
 
         #readotp-button:hover {
-            background-color: #8EA7E9;
+            background-color: #6a82c5;
+        }
+        
+        #readotp-button:active {
+            top: 389px;
+            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
 
         #message {
@@ -267,17 +288,67 @@
             messageDiv.innerHTML = "";
         }
         
+           /*      var lastPressTime = 0;
+
+
+                var lastPressTime = 0;
+        var pressCount = 0;
+        
+        function handleButtonClick() {
+            var currentTime = new Date().getTime();
+            var button = document.getElementById("readin-button");
+            
+            if (currentTime - lastPressTime <= 120000) {
+            // Less than 2 minutes have passed since the last press
+            pressCount++;
+            if (pressCount === 1) {
+                button.innerHTML = "Cancel";
+                setTimeout(function() {
+                button.innerHTML = "App";
+                pressCount = 0;
+                }, 60000); // Revert to "App" text after 1 minute
+            } else if (pressCount === 2) {
+                button.innerHTML = "App";
+                pressCount = 0;
+            }
+            } else {
+            // More than 2 minutes have passed since the last press
+            button.innerHTML = "App";
+            pressCount = 0;
+            }
+            
+            lastPressTime = currentTime;
+        } */
         async function scanRFIDotp() {
             var button = document.getElementById("readotp-button");
             if (button.innerHTML === "APP") {
                 button.innerHTML = "...";
                 sendPostRequest_app();
+                await sleep(1000);
+                button.innerHTML = "Cancel"
                 console.log("Otping")
-                await sleep(3000);
+                await sleep(120000); // 2 minuti
                 button.innerHTML = "APP";
             } else {
                 button.innerHTML = "APP";
             }
+
+           /*  var currentTime = new Date().getTime();
+    
+            if (currentTime - lastPressTime <= 120000) {
+            // Less than 2 minutes have passed since the last press
+                button.innerHTML = "...";
+                sendPostRequest_app();
+                await sleep(1000);
+                button.innerHTML = "Cancel"
+                console.log("Otping")
+
+            } else {
+            // More than 2 minutes have passed since the last press
+            callFirstFunction();
+            }
+            
+            lastPressTime = currentTime; */
         }
         
         function sendPostRequest_app(){
