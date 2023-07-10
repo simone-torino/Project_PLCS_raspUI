@@ -251,12 +251,13 @@
                        
                         if (timeLeft > 0) {
                             timerDiv.style.display = "block";
-                            timerDiv.innerText = 'Timer: ' + formatTime(timeLeft);
+                            timerDiv.innerText = 'OTP will expire in: ' + formatTime(timeLeft);
                             timeLeft--;
                         } else {
                             clearInterval(timer);
+                            timerDiv.innerText = 'OTP expired';
                             setTimeout(function(){
-                                timerDiv.innerText = 'Timer has finished';
+                                timerDiv.innerText = '';
                             }, 3000)
                             buttonDiv.innerText = 'APP';
                             isRunning = false;
