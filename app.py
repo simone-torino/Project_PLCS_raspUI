@@ -350,7 +350,7 @@ def get_area_name(area_id):
 
     cursor.execute('SELECT area_name FROM areas WHERE area_id = %s', area_id)
     area_name = cursor.fetchone()
-    area_name = re.sub(r'\W+', '', str(area_name))
+    area_name = re.sub(r'[^a-zA-Z0-9\s]', '', str(area_name))
     return area_name
 
 if __name__ == '__main__':
