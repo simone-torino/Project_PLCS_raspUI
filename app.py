@@ -55,7 +55,8 @@ def read():
             totp = pyotp.TOTP(pyotp.random_base32())
             otp_code = totp.now()
 
-            # Calcola l'ora di scadenza dell'OTP code: in questo caso è dopo 2 giorni visto che è un invito per registrarsi
+            # Calcola l'ora di scadenza dell'OTP code: in questo caso è dopo 2 minuti
+            
             otp_expiration = datetime.now() + timedelta(minutes=2)
 
             # Salva l'OTP code, l'ora di scadenza dell'otp, l'email, la compagnia e il ruolo nella tabella invitations
