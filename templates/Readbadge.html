@@ -50,10 +50,10 @@
         #readin-button:hover {
             background-color: #00b800;
         }
-        
+
         #readin-button:active {
             top: 235px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+            box-shadow: #c0392b 0px 3px 2px, #000 0px 3px 5px;
         }
 
         #readout-button {
@@ -76,13 +76,13 @@
         #readout-button:hover {
             background-color: #d40606;
         }
-        
+
         #readout-button:active {
             top: 235px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+            box-shadow: #c0392b 0px 3px 2px, #000 0px 3px 5px;
         }
-        
-         #readotp-button {
+
+        #readotp-button {
             width: 280px;
             height: 50px;
             font-size: 40px;
@@ -102,10 +102,10 @@
         #readotp-button:hover {
             background-color: #526cb4;
         }
-        
+
         #readotp-button:active {
             top: 395px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+            box-shadow: #c0392b 0px 3px 2px, #000 0px 3px 5px;
         }
 
         #message {
@@ -116,6 +116,16 @@
             font-weight: bold;
             font-size: 25px;
         }
+
+        #timer {
+            position: absolute;
+            display: none;
+            top: 290px;
+            left: 60px;
+            font-weight: bold;
+            font-size: 25px;
+        }
+
 
         #datetime {
             position: absolute;
@@ -134,255 +144,200 @@
             width: 50px;
         }
     </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>RFID Login</h1>
+        <p id="displayArea">You are in <b>{{ area_name }}</b><br>Please scan your RFID card</p>
+        <button id="readin-button" onclick="scanRFIDin()">IN</button>
+        <button id="readout-button" onclick="scanRFIDout()">OUT</button>
+        <button id="readotp-button" onclick="scanRFIDotp()">APP</button>
+        <div id="datetime"></div>
+        <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
+        <div id="message"></div>
+        <div id="timer"></div>
+    </div>
+
+    <script src="static/display_messages.js"></script>
+    <script src="static/inout_buttons.js"></script>
     <script>
+
+        let timer;
+        let isRunning = false;
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            let timeLeft = 120; // 2 minutes in seconds
+
+            function updateTimer() {
+                if (timeLeft > 0) {
+                    document.getElementById('timer').innerText = 'Timer: ' + formatTime(timeLeft);
+                    timeLeft--;
+                } else {
+                    clearInterval(timer);
+                    document.getElementById('timer').innerText = 'Timer has finished';
+                    document.getElementById('readotp-button').innerText = 'APP';
+                    isRunning = false;
+                }
+            }
+
+            updateTimer();
+            timer = setInterval(updateTimer, 1000);
+        }
+
+        function cancelTimer() {
+            clearInterval(timer);
+            document.getElementById('timer').innerText = 'Operation Canceled';
+
+            // Hide the "Operation Canceled" timer after 3 seconds
+            setTimeout(function () {
+                document.getElementById('timer').innerText = '';
+            }, 3000);
+
+            document.getElementById('readotp-button').innerText = 'APP';
+            isRunning = false;
+        }
+
+        function scanRFIDotp() {
+            if (isRunning) {
+                cancelTimer();
+            } else {
+                var isApp = true;
+                sendPostRequest(false, isApp)
+                document.getElementById('timer').innerText = '';
+                document.getElementById('readotp-button').innerText = 'CANCEL';
+                isRunning = true;
+                startTimer();
+            }
+        }
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        async function scanRFIDin() {
-            var button = document.getElementById("readin-button");
-            if (button.innerHTML === "IN") {
-                button.innerHTML = "...";
-                sendPostRequest(true);
-                console.log("Entering")
-                await sleep(3000);
-                button.innerHTML = "IN";
-            } else {
-                button.innerHTML = "IN";
-            }
-        }
 
-        async function scanRFIDout() {
-            var button = document.getElementById("readout-button");
-            if (button.innerHTML === "OUT") {
-                button.innerHTML = "...";
-                sendPostRequest(false);
-                console.log("Exiting")
-                await sleep(3000);
-                button.innerHTML = "OUT";
-            } else {
-                button.innerHTML = "OUT";
-            }
-        }
+        // async function scanRFIDotp() {
+        //     var button = document.getElementById("readotp-button");
+        //     if (button.innerHTML === "APP") {
+        //         button.innerHTML = "...";
+        //         sendPostRequest_app();
+        //         await sleep(1000);
+        //         button.innerHTML = "Cancel"
+        //         console.log("Otping")
+        //         await sleep(120000); // 2 minuti
+        //         button.innerHTML = "APP";
+        //     } else {
+        //         button.innerHTML = "APP";
+        //     }
 
-        // isEntering is true if the user has pressed the IN button
-        function sendPostRequest(isEntering) {
-            fetch('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ isEntering: isEntering })
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Post request failed.');
-                    }
-                })
-                .then(data => {
-                    if (data.Err_db) {
-                        displayError(3);
-                    }
-                    // If the card is empty redirect to the keypad
-                    const isEmpty = data.empty;
-                    if (isEmpty) {
-                        window.location.href = "/keypad";
-                    } else {
-                        // Update the isSuccess variable based on the server response
-                        displayMessage(data);
-                    }
-
-                })
-                .catch(error => {
-                    // Handle any errors that occurred during the request
-                    if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
-                        var messageDiv = document.getElementById("message");
-                        displayError(2);
-                    } else {
-                        console.log(error);
-
-                        var messageDiv = document.getElementById("message");
-                        displayError(1);
-                    }
-                });
-        }
-
-        async function displayError(err_id) {
-            var messageDiv = document.getElementById("message");
-
-            switch (err_id) {
-                case 1:
-                    messageDiv.innerHTML = "Request failed<br>Check internet connection";
-                    break;
-                case 2:
-                    messageDiv.innerHTML = "NetworkError when <br>attempting to fetch resource";
-                    break;
-                case 3:
-                    messageDiv.innerHTML = "Error in<br>database connection";
-                    break;
-                case 4:
-                    messageDiv.innerHTML = "You must enter<br>before exiting";
-                    break;
-                case 5:
-                    messageDiv.innerHTML = "You must exit<br>before entering";
-                    break;
-                case 6:
-                    messageDiv.innerHTML = "No areas assigned<br>to this badge";
-                    break;
-                case 7:
-                    messageDiv.innerHTML = "You can't open<br>this door";
-                    break;
-                default:
-                    messageDiv.innerHTML = "Generic error";
-                    break;
-            }
-            messageDiv.style.display = "block";
-            messageDiv.style.color = "#bb0000";
-
-            //Reset message after 3s
-            await sleep(3000);
-            messageDiv.innerHTML = "";
-            messageDiv.style.color = "#000000";
-        }
-
-        async function displayMessage(data) {
-            var messageDiv = document.getElementById("message");
-            console.log("Displaying message")
-            console.log(data.result)
-
-            if (data.dbsuccess) {
-
-                if (data.result == "goinfirst") {
-                    displayError(4);
-                } else if (data.result == "gooutfirst") {
-                    displayError(5);
-                } else if (data.result == "violation_noarea") {
-                    displayError(6);
-                } else if (data.result == "violation") {
-                    displayError(7);
-                } else if (data.result == "success_in") {
-                    messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
-                    messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
-                } else if (data.result == "success_out") {
-                    messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
-                    messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
-                } else { //Means that the result is an otp code
-                    messageDiv.style.color = "#253885";
-                    messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
-                    await sleep(120000);
-                }
-
-            } else {
-                messageDiv.innerHTML = "Badge not found<br>in the database";
-            }
-
-            messageDiv.style.display = "block";
-            //Reset message after 5s
-            await sleep(5000);
-            messageDiv.style.color = "#000000";
-            messageDiv.innerHTML = "";
-        }
-        
-           /*      var lastPressTime = 0;
-
-
-                var lastPressTime = 0;
+        var lastPressTime = 0;
         var pressCount = 0;
-        
-        function handleButtonClick() {
-            var currentTime = new Date().getTime();
-            var button = document.getElementById("readin-button");
-            
-            if (currentTime - lastPressTime <= 120000) {
-            // Less than 2 minutes have passed since the last press
-            pressCount++;
-            if (pressCount === 1) {
-                button.innerHTML = "Cancel";
-                setTimeout(function() {
-                button.innerHTML = "App";
-                pressCount = 0;
-                }, 60000); // Revert to "App" text after 1 minute
-            } else if (pressCount === 2) {
-                button.innerHTML = "App";
-                pressCount = 0;
-            }
-            } else {
-            // More than 2 minutes have passed since the last press
-            button.innerHTML = "App";
-            pressCount = 0;
-            }
-            
-            lastPressTime = currentTime;
-        } */
-        async function scanRFIDotp() {
-            var button = document.getElementById("readotp-button");
-            if (button.innerHTML === "APP") {
-                button.innerHTML = "...";
-                sendPostRequest_app();
-                await sleep(1000);
-                button.innerHTML = "Cancel"
-                console.log("Otping")
-                await sleep(120000); // 2 minuti
-                button.innerHTML = "APP";
-            } else {
-                button.innerHTML = "APP";
-            }
+        var timeInSeconds = 120;
 
-           /*  var currentTime = new Date().getTime();
-    
-            if (currentTime - lastPressTime <= 120000) {
-            // Less than 2 minutes have passed since the last press
-                button.innerHTML = "...";
-                sendPostRequest_app();
-                await sleep(1000);
-                button.innerHTML = "Cancel"
-                console.log("Otping")
+        // async function scanRFIDotp() {
+        //     var currentTime = new Date().getTime();
+        //     var button = document.getElementById("readotp-button");
+        //     // Get the message and timer elements
+        //     var messageDiv = document.getElementById("timer");
+        //     // Display the message div
+        //     messageDiv.style.display = "block";
 
-            } else {
-            // More than 2 minutes have passed since the last press
-            callFirstFunction();
-            }
-            
-            lastPressTime = currentTime; */
-        }
-        
-        function sendPostRequest_app(){
-            fetch('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ isApp: true })
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Post request failed.');
-                    }
-                })
-                .then(data => {
-                     if (data.Err_db) {
-                        displayError(3);
-                    }
-                    displayMessage(data);
-                })
-                .catch(error => {
-                    // Handle any errors that occurred during the request
-                    if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
-                        var messageDiv = document.getElementById("message");
-                        displayError(2);
-                    } else {
-                        console.log(error);
+        //     if (currentTime - lastPressTime <= 120000) {
+        //     // Less than 2 minutes have passed since the last press
+        //     pressCount++;
+        //     if (pressCount === 1) { //Show otp code on screen
+        //         button.innerHTML = "Cancel";
 
-                        var messageDiv = document.getElementById("message");
-                        displayError(1);
-                    }    
-                });
-        }
+        //         sendPostRequest_app();
+
+        //         setTimeout(function() {
+        //         button.innerHTML = "APP";
+        //         pressCount = 0;
+        //         }, 120000); // Revert to "App" text after 2 minutes
+
+        //          // Update the timer display every second
+        //         var countdownInterval = setInterval(function() {
+        //         // Convert time to mm:ss format
+        //         var minutes = Math.floor(timeInSeconds / 60);
+        //         var seconds = timeInSeconds % 60;
+        //         var timeString = ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+
+        //         // Update the timer display
+        //         messageDiv.textContent = "The OTP expires in " + timeString + "minutes";
+
+        //         // Decrease the time by 1 second
+        //         timeInSeconds--;
+
+        //         // Check if the time has reached 0
+        //         if (timeInSeconds < 0) {
+        //             // Hide the message div when the time is up
+        //             messageDiv.style.display = "none";
+        //             clearInterval(countdownInterval);
+        //         }
+        //         }, 1000); // 1000 milliseconds = 1 second
+
+        //     } else if (pressCount === 2) { //Cancel operation
+        //         messageDiv.style.color = "#bb0000";
+        //         messageDiv.innerHTML = "Operation canceled"; 
+        //         await sleep(3000)
+        //         messageDiv.style.display = "none";
+        //         messageDiv.style.color = "#bb0000";
+        //         messageDiv.innerHTML = "";
+        //         button.innerHTML = "APP";
+        //         pressCount = 0;
+        //     }
+        //     } else {
+        //     // More than 2 minutes have passed since the last press
+        //     button.innerHTML = "APP";
+        //     pressCount = 0;
+        //     }
+
+        //     lastPressTime = currentTime;
+        // }
+
+
+        // function sendPostRequest_app(){
+        //     fetch('/', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({ isApp: true })
+        //     })
+        //         .then(response => {
+        //             if (response.ok) {
+        //                 return response.json();
+        //             } else {
+        //                 throw new Error('Post request failed.');
+        //             }
+        //         })
+        //         .then(data => {
+        //              if (data.Err_db) {
+        //                 displayError(3);
+        //             }
+        //             displayMessage(data);
+        //         })
+        //         .catch(error => {
+        //             // Handle any errors that occurred during the request
+        //             if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
+        //                 var messageDiv = document.getElementById("message");
+        //                 displayError(2);
+        //             } else {
+        //                 console.log(error);
+
+        //                 var messageDiv = document.getElementById("message");
+        //                 displayError(1);
+        //             }    
+        //         });
+        // }
 
         document.addEventListener("DOMContentLoaded", function () {
             // Function to update the datetime
@@ -400,19 +355,7 @@
             setInterval(updateDatetime, 1000);
         });
     </script>
-</head>
 
-<body>
-    <div class="container">
-        <h1>RFID Login</h1>
-        <p id="displayArea">You are in <b>{{ area_name }}</b><br>Please scan your RFID card</p>
-        <button id="readin-button" onclick="scanRFIDin()">IN</button>
-        <button id="readout-button" onclick="scanRFIDout()">OUT</button>
-        <button id="readotp-button" onclick="scanRFIDotp()">APP</button>
-        <div id="datetime"></div>
-        <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
-        <div id="message"></div>
-    </div>
 </body>
 
 </html>
