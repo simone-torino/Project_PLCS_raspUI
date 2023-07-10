@@ -44,16 +44,15 @@
             position: absolute;
             top: 230px;
             left: 400px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
-
+            box-shadow: #c0392b 0px 7px 2px, #000 0px 8px 5px;
         }
 
         #readin-button:hover {
-            background-color: #00e200;
+            background-color: #00b800;
         }
         
         #readin-button:active {
-            top: 233px;
+            top: 235px;
             box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
 
@@ -70,17 +69,16 @@
             transition: background-color 0.3s ease;
             position: absolute;
             top: 230px;
-            left: 551px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
-
+            left: 556px;
+            box-shadow: #c0392b 0px 7px 2px, #000 0px 8px 5px;
         }
 
         #readout-button:hover {
-            background-color: #f30000;
+            background-color: #d40606;
         }
         
         #readout-button:active {
-            top: 233px;
+            top: 235px;
             box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
         
@@ -89,25 +87,24 @@
             height: 50px;
             font-size: 40px;
             font-weight: bold;
-            background-color: #4b5fb1;
+            background-color: #364fb4;
             color: #ffffff;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             position: absolute;
-            top: 386px;
+            top: 390px;
             left: 410px;
-            box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
-
+            box-shadow: #c0392b 0px 7px 2px, #000 0px 8px 5px;
         }
 
         #readotp-button:hover {
-            background-color: #6a82c5;
+            background-color: #526cb4;
         }
         
         #readotp-button:active {
-            top: 389px;
+            top: 395px;
             box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
 
@@ -275,6 +272,7 @@
                 } else { //Means that the result is an otp code
                     messageDiv.style.color = "#253885";
                     messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
+                    await sleep(120000);
                 }
 
             } else {
