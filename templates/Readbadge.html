@@ -251,7 +251,7 @@
                 } else if (data.result == "success_out") {
                     messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                     messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
-                } else if(data.result != None){
+                } else { //Means that the result is an otp code
                     messageDiv.style.color = "#7286D3";
                     messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
                 }

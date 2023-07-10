@@ -75,7 +75,7 @@ def read():
                 cursor.execute('UPDATE raspberry_otp SET otp = %s, otp_expiration = %s WHERE area_id = %s',[str(otp_code), str(otp_expiration), str(area_id[0])])
                 conn.commit()
             cursor.close()
-            response = {'result' : otp_code}
+            response = {'dbsuccess': True, 'result' : otp_code}
             return jsonify(response)
         
         else: 
