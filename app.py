@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'secretkey'
 
 # MySQL configuration
-mysql_host = '192.168.41.16'
+mysql_host = '192.168.145.16'
 mysql_user = 'pi'
 mysql_password = '123'
 mysql_db = 'dac'
@@ -44,6 +44,12 @@ def rfid_write(code):
 @app.route('/', methods=["GET", "POST"])
 def read():
     if request.method == "POST":
+        #acquisisco il booleano che mi dice se sto usando l'app
+        isApp = request.get_json().get('isApp')
+        if (isApp):
+            
+            return 
+
         print("Sto leggendo la carta")
         # Check if the RFID code is empty
         rfid_code = rfid_read()

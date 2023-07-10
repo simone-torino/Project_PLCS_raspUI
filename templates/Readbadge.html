@@ -298,7 +298,16 @@
                     displayMessage(data);
                 })
                 .catch(error => {
-    
+                    // Handle any errors that occurred during the request
+                    if (error instanceof TypeError && error.message === "NetworkError when attempting to fetch resource.") {
+                        var messageDiv = document.getElementById("message");
+                        displayError(2);
+                    } else {
+                        console.log(error);
+
+                        var messageDiv = document.getElementById("message");
+                        displayError(1);
+                    }    
                 });
         }
 
