@@ -8,7 +8,7 @@ import pyotp
 
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 12
+raspberry_area_id = 9
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
