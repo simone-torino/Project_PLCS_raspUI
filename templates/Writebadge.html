@@ -22,7 +22,7 @@
         h1 {
             font-size: 44px;
             margin-bottom: 10px;
-            margin-top: -60px;
+            margin-top: -190px;
         }
 
         p {
@@ -41,7 +41,10 @@
             border-radius: 40px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: -10px;
+            position: absolute;
+            top: 230px;
+            box-shadow: #c0392b 0px 7px 2px, #000 0px 8px 5px;
+
         }
 
         #write-button:hover {
@@ -49,9 +52,8 @@
             
         }
 
-        
         #write-button:active {
-            top: 235px;
+            top: 236px;
             box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
         }
 
@@ -91,7 +93,7 @@
         if (button.innerHTML === "SCAN") {
             button.innerHTML = "SCANNING...";
             sendPostRequest();  
-            await sleep(3000);
+            await sleep(4000);
             button.innerHTML = "SCAN";
         } else {
             button.innerHTML = "SCAN";
@@ -144,7 +146,7 @@
         }
         messageDiv.style.display = "block";
         //Reset message after 3s
-        await sleep(3000);
+        await sleep(5000);
         messageDiv.innerHTML = "";
     }
 
@@ -153,7 +155,7 @@
 
         if (isSuccess) {
             messageDiv.innerHTML = "Card written correctly! You can login now...";
-            await sleep(3000);
+            await sleep(7000);
             window.location.href = "/";
         } else {
             messageDiv.innerHTML = "Can't write card, contact your administrator";
