@@ -255,8 +255,9 @@
                             timeLeft--;
                         } else {
                             clearInterval(timer);
-                            timerDiv.innerText = 'Timer has finished';
-                            buttonDiv.style.display = "block"
+                            setTimeout(function(){
+                                timerDiv.innerText = 'Timer has finished';
+                            }, 3000)
                             buttonDiv.innerText = 'APP';
                             isRunning = false;
                         }
@@ -287,7 +288,6 @@
                         var isApp = true;
                         sendPostRequest(false, isApp)
                         timerDiv.innerText = '';
-                        buttonDiv.style.display = "block";
                         buttonDiv.innerText = 'CANCEL';
                         isRunning = true;
                         startTimer();
@@ -300,6 +300,7 @@
 
                 async function displayError(err_id) {
             var messageDiv = document.getElementById("message");
+            messageDiv.style.display = "block";
 
             switch (err_id) {
                 case 1:
@@ -327,7 +328,6 @@
                     messageDiv.innerHTML = "Generic error";
                     break;
             }
-            messageDiv.style.display = "block";
             messageDiv.style.color = "#bb0000";
 
             //Reset message after 3s
@@ -338,6 +338,7 @@
 
                 async function displayMessage(data) {
                     var messageDiv = document.getElementById("message");
+                    messageDiv.style.display = "block"
                     console.log("Displaying message")
                     console.log(data.result)
 
