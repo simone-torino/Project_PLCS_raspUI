@@ -69,7 +69,7 @@ def read():
             cursor.execute("SELECT area_id FROM raspberry_otp WHERE area_id = %s", [str(raspberry_area_id)])
             area_id = cursor.fetchone()
             if area_id is None:
-                cursor.execute("INSERT INTO raspberry_otp (area_id, otp, otp_expiration) VALUES (%s, %s, %s)", [str(raspberry_area_id, str(otp_code), str(otp_expiration))])
+                cursor.execute("INSERT INTO raspberry_otp (area_id, otp, otp_expiration) VALUES (%s, %s, %s)", [str(raspberry_area_id), str(otp_code), str(otp_expiration)])
                 conn.commit()
             else:
                 cursor.execute('UPDATE raspberry_otp SET otp_code = %s, otp_expiration = %s WHERE area_id = %s',[str(otp_code), str(otp_expiration), str(area_id)])
