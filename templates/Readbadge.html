@@ -423,12 +423,13 @@
                 var currentDate = new Date();
                 var datetimeString = currentDate.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); // Convert the date to a localized string
                 datetimeDiv.innerHTML = datetimeString;
+                getOTPoutcome();
             }
 
             // Update the datetime initially
             updateDatetime();
 
-            getOTPoutcome();
+            
 
             // Update the datetime every second
             setInterval(updateDatetime, 1000);
