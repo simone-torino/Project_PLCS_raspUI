@@ -243,7 +243,7 @@ def read():
                 person_ID = row[0] #questo è il person_id
 
                 #selezione l'id dell'area: se nella tabella del db non c'è nessuna area_id che corrisponde a quella della raspberry allora fai INSERT
-                cursor.execute("SELECT timestamp_IN, timestamp_OUT FROM access_history WHERE area_id = %s, person_id = %s", [str(raspberry_area_id), str(person_ID)])
+                cursor.execute("SELECT timestamp_IN, timestamp_OUT FROM access_history WHERE area_id = %s AND person_id = %s", [str(raspberry_area_id), str(person_ID)])
                 row = cursor.fetchall()
                 timest_IN = [x[0] for x in row] #vettore con tutti i timestamp di ingresso per quella persona, di quella compagnia per quell'area
                 timest_OUT = [x[1] for x in row] #vettore con tutti i timestamp di uscita per quella persona, di quella compagnia per quell'area
