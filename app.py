@@ -9,7 +9,7 @@ import numpy as np
 
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 31
+raspberry_area_id = 37
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
@@ -46,6 +46,7 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read():
+    
     if request.method == "POST":
 
         #acquisisco il booleano che mi dice se sto usando l'app
@@ -214,6 +215,7 @@ def read():
                     return jsonify(response)
     # GET request, render the page
     else:
+        isApp = request.get_json().get('isApp')
         if(isApp):
                 # query ad access history per capire se la porta è aperta oppure no
                 conn = get_db()

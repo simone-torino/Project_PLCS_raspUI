@@ -295,9 +295,20 @@
                     fetch('/')
                         .then(response => response.json())
                         .then(data => {
-                            
+
                             // Do something with the response data
                             console.log(data);
+
+                            messageDiv.style.display = "block";
+
+                            if(data.success_otp){ //TODO: da mettere nome cognome ora ingresso/uscita 
+                                messageDiv.style.color = "#01a701";
+                                messageDiv.innerHTML = "Access allowed"
+                            }else{
+                                messageDiv.style.color = "#bb0000";
+                                messageDiv.innerHTML = "Access denied"
+                            }
+
                         })
                         .catch(error => {
                             // Handle any errors
