@@ -249,7 +249,7 @@ def read():
                 timest_OUT = [x[1] for x in row] #vettore con tutti i timestamp di uscita per quella persona, di quella compagnia per quell'area
 
                 for x in range (0, len(timest_IN)):
-                    if (timest_IN[x] != None) and (time_OUT[x] != None) :
+                    if (timest_IN[x] != None) and (timest_OUT[x] != None) :
                         cnt += 1
                     else:
                         index = x 
