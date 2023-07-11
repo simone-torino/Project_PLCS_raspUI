@@ -215,6 +215,7 @@
                     } else {
                         
                         if(isApp){
+                            messageDiv.style.display = "block";
                             messageDiv.style.color = "#253885";
                             messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
                         } else{
@@ -279,6 +280,7 @@
                     // Hide the "Operation Canceled" timer after 3 seconds
                     setTimeout(function () {
                         timerDiv.innerText = '';
+                        messageDiv.style.display = "none";
                         messageDiv.innerText = '';
                     }, 3000);
 
@@ -289,7 +291,6 @@
                 function scanRFIDotp() {
                     if (isRunning) {
                         cancelTimer();
-                       
                     } else {
                         var isApp = true;
                         sendPostRequest(false, isApp)
@@ -365,8 +366,7 @@
                             messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                             messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                         }else{
-                            messageDiv.style.color = "#253885";
-                            messageDiv.innerHTML = "What"
+                            messageDiv.innerHTML = "Post error"
                         }
 
                     } else {
