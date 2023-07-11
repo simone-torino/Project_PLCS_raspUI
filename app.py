@@ -213,6 +213,18 @@ def read():
                     return jsonify(response)
     # GET request, render the page
     else:
+        if(isApp):
+                # query ad access history per capire se la porta è aperta oppure no
+
+                if():
+                    # porta aperta
+                    response = {'otp_result' : True}
+                    return jsonify(response)
+                else:
+                    # porta chiusa
+                    response = {'otp_result' : False}
+                    return jsonify(response)
+                
         area_name = get_area_name(raspberry_area_id)
         return render_template('Readbadge.html', area_name = area_name)
 
