@@ -265,7 +265,7 @@ def read():
                     response = {'success_otp': 'otp_fail'}
                     print("porta chiusa")
                     sse.publish(response, type='update')
-                    
+                    return jsonify(response)
                     #return render_template('Readbadge.html', jsonify(response))
                 
                 else:
@@ -273,6 +273,7 @@ def read():
                     response = {'success_otp': 'otp_success'}
                     print("porta aperta")
                     sse.publish(response, type='update')
+                    return jsonify(response)
                     #return render_template('Readbadge.html')
              
         print("ritorno il template")
