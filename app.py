@@ -255,7 +255,7 @@ def read():
                     else:
                         index = x 
             
-                if(cnt == len(time_IN)):
+                if(cnt == len(timest_IN)):
                     #porta chiusa
                     response = {'success_otp': False}
                     return jsonify(response)
