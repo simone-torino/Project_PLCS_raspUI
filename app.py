@@ -5,7 +5,6 @@ import re
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
 import pyotp
-import numpy as np
 
 
 #alla raspberry viene associata una singola area_id
@@ -233,8 +232,8 @@ def read():
                     return('EMPTY raspberry_otp')
                 else:
                     IDs = [x[0] for x in IDs] #vettore con tutti gli IDs
-                    maximum = np.max(IDs)
-
+                    maximum = max(IDs)
+                
                 cursor.execute("SELECT person_id FROM raspberry_otp WHERE id = %s", [str(maximum)])
                 row = cursor.fetchone()
                 person_ID = row[0] #questo è il person_id
