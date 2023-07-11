@@ -246,9 +246,7 @@
 
                 function startTimer() {
                     let timeLeft = 120; // 2 minutes in seconds
-
                     function updateTimer() {
-                       
                         if (timeLeft > 0) {
                             timerDiv.style.display = "block";
                             timerDiv.innerText = 'OTP will expire in: ' + formatTime(timeLeft);
@@ -263,7 +261,6 @@
                             isRunning = false;
                         }
                     }
-
                     updateTimer();
                     timer = setInterval(updateTimer, 1000);
                 }
@@ -285,9 +282,11 @@
                 function scanRFIDotp() {
                     if (isRunning) {
                         cancelTimer();
+                        displayMessage(None);
                     } else {
                         var isApp = true;
                         sendPostRequest(false, isApp)
+                        
                         timerDiv.innerText = '';
                         buttonDiv.innerText = 'CANCEL';
                         isRunning = true;
@@ -362,7 +361,6 @@
                         } else { //Means that the result is an otp code
                             messageDiv.style.color = "#253885";
                             messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
-                            await sleep(120000);
                         }
 
                     } else {
