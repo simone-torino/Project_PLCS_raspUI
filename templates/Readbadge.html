@@ -213,8 +213,13 @@
                     if (isEmpty) {
                         window.location.href = "/keypad";
                     } else {
-                        // Update the isSuccess variable based on the server response
-                        displayMessage(data);
+                        
+                        if(isApp){
+                            messageDiv.style.color = "#253885";
+                            messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
+                        } else{
+                            displayMessage(data);
+                        }
                     }
 
                 })
@@ -274,6 +279,7 @@
                     // Hide the "Operation Canceled" timer after 3 seconds
                     setTimeout(function () {
                         timerDiv.innerText = '';
+                        messageDiv.innerText = '';
                     }, 3000);
 
                     buttonDiv.innerText = 'APP';
@@ -283,16 +289,10 @@
                 function scanRFIDotp() {
                     if (isRunning) {
                         cancelTimer();
-                        displayMessage(None);
+                       
                     } else {
                         var isApp = true;
                         sendPostRequest(false, isApp)
-
-                        // Hide the otp message timer after 3 seconds
-                        setTimeout(function () {
-                            messageDiv.innerText = '';
-                        }, 3000);
-                        
                         timerDiv.innerText = '';
                         buttonDiv.innerText = 'CANCEL';
                         isRunning = true;
@@ -364,22 +364,20 @@
                         } else if (data.result == "success_out") {
                             messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                             messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
-                        } else { //Means that the result is an otp code
+                        }else{
                             messageDiv.style.color = "#253885";
-                            messageDiv.innerHTML = "Use the code<br>" + data.result + "<br>to register time log"
+                            messageDiv.innerHTML = "What"
                         }
 
                     } else {
                         messageDiv.innerHTML = "Badge not found<br>in the database";
                     }
                     
-                    if(data != None){
-                        //Reset message after 5s
-                        await sleep(5000);
-                        messageDiv.style.color = "#000000";
-                        messageDiv.innerHTML = "";
-                    }
-                    
+                    //Reset message after 5s
+                    await sleep(5000);
+                    messageDiv.style.color = "#000000";
+                    messageDiv.innerHTML = "";
+                                   
                 }
 
         document.addEventListener("DOMContentLoaded", function () {
