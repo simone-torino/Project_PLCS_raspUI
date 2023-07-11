@@ -236,6 +236,7 @@
                 let isRunning = false;
                 var timerDiv = document.getElementById('timer');
                 var buttonDiv = document.getElementById('readotp-button')
+                var messageDiv = document.getElementById("message");
 
                 function formatTime(seconds) {
                     const minutes = Math.floor(seconds / 60);
@@ -286,6 +287,11 @@
                     } else {
                         var isApp = true;
                         sendPostRequest(false, isApp)
+
+                        // Hide the otp message timer after 3 seconds
+                        setTimeout(function () {
+                            messageDiv.innerText = '';
+                        }, 3000);
                         
                         timerDiv.innerText = '';
                         buttonDiv.innerText = 'CANCEL';
