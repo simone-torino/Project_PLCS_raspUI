@@ -258,12 +258,14 @@ def read():
                 if(cnt == len(timest_IN)):
                     #porta chiusa
                     response = {'success_otp': 'otp_fail'}
-                    return render_template('Readbadge.html', jsonify(response))
+                    return jsonify(response)
+                    #return render_template('Readbadge.html', jsonify(response))
                 
                 else:
                     #porta aperta
                     response = {'success_otp': 'otp_success'}
-                    return render_template('Readbadge.html', jsonify(response))
+                    return jsonify(response)
+                    #return render_template('Readbadge.html')
              
         print("ritorno il template")
         area_name = get_area_name(raspberry_area_id)
