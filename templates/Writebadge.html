@@ -152,15 +152,18 @@
 
     async function displayMessage(isSuccess) {
         var messageDiv = document.getElementById("message");
+        messageDiv.style.display = "block";
 
         if (isSuccess) {
+            messageDiv.style.color = "#01a701"; //green
             messageDiv.innerHTML = "Card written correctly! You can login now...";
             await sleep(7000);
             window.location.href = "/";
         } else {
+            messageDiv.style.color = "#d40606"; //red
             messageDiv.innerHTML = "Can't write card, contact your administrator";
         }
-        messageDiv.style.display = "block";
+        
         //Reset message after 5s
         await sleep(5000);
         messageDiv.innerHTML = "";
