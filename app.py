@@ -46,7 +46,6 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read():
-    
     if request.method == "POST":
 
         #acquisisco il booleano che mi dice se sto usando l'app
@@ -214,7 +213,7 @@ def read():
 
                     return jsonify(response)
     # GET request, render the page
-    else:
+    elif request.method == "GET":
         isApp = request.get_json().get('isApp')
         if(isApp):
                 # query ad access history per capire se la porta è aperta oppure no
@@ -254,12 +253,14 @@ def read():
             
                 if(cnt == len(time_IN)):
                     #porta chiusa
-                    return
-
+                    response = {'success_otp': False}
+                    return jsonify(response)
+                
                 else:
                     #porta aperta
-                    return
-
+                    response = {'success_otp': True}
+                    return jsonify(response)
+                
         area_name = get_area_name(raspberry_area_id)
         return render_template('Readbadge.html', area_name = area_name)
 
