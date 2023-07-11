@@ -309,6 +309,12 @@
                                 messageDiv.innerHTML = "Access denied"
                             }
 
+                            setTimeout(function () {
+                                messageDiv.style.display = "none";
+                                messageDiv.innerText = '';
+                                messageDiv.style.color = "#000000";
+                            }, 4000);
+
                         })
                         .catch(error => {
                             // Handle any errors

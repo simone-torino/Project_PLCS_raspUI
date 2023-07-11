@@ -259,9 +259,9 @@ def read():
                     #porta aperta
                     response = {'success_otp': True}
                     return jsonify(response)
-                
-        area_name = get_area_name(raspberry_area_id)
-        return render_template('Readbadge.html', area_name = area_name)
+        else:     
+            area_name = get_area_name(raspberry_area_id)
+            return render_template('Readbadge.html', area_name = area_name)
 
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
