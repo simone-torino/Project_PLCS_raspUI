@@ -45,10 +45,11 @@ def rfid_write(code):
 # Route for home page
 @app.route('/', methods=["GET", "POST"])
 def read():
+    isApp = request.get_json().get('isApp')
     if request.method == "POST":
 
         #acquisisco il booleano che mi dice se sto usando l'app
-        isApp = request.get_json().get('isApp')
+        #isApp = request.get_json().get('isApp')
         if (isApp):
             
             # Genera l'OTP code
