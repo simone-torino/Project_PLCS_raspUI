@@ -333,8 +333,10 @@
                         isRunning = true;
                         startTimer();
                     }
-                    getOTPoutcome();
+                    
                 }
+
+                getOTPoutcome();
 
                 function sleep(ms) {
                     return new Promise(resolve => setTimeout(resolve, ms));

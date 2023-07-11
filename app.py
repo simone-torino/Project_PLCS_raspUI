@@ -213,8 +213,10 @@ def read():
                     return jsonify(response)
     # GET request, render the page
     elif request.method == "GET":
+        print("entro nella get")
         isApp = request.get_json().get('isApp')
         if(isApp):
+                print("isApp get")
                 # query ad access history per capire se la porta è aperta oppure no
                 conn = get_db()
                 if(conn == None):
@@ -259,9 +261,10 @@ def read():
                     #porta aperta
                     response = {'success_otp': True}
                     return jsonify(response)
-        else:     
-            area_name = get_area_name(raspberry_area_id)
-            return render_template('Readbadge.html', area_name = area_name)
+             
+        print("ritorno il template")
+        area_name = get_area_name(raspberry_area_id)
+        return render_template('Readbadge.html', area_name = area_name)
 
 # Route for keypad page
 @app.route('/keypad', methods=["GET", "POST"])
