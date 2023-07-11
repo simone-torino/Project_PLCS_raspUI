@@ -5,6 +5,8 @@ import re
 from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
 import pyotp
+from flask_sse import sse
+
 
 session = {}
 
@@ -13,6 +15,9 @@ raspberry_area_id = 37
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
+
+app.config["REDIS_URL"] = "redis://localhost"
+app.register_blueprint(sse, url_prefix='/stream')
 
 # MySQL configuration
 mysql_host = '192.168.145.16'
@@ -258,13 +263,14 @@ def read():
                 if(cnt == len(timest_IN)):
                     #porta chiusa
                     response = {'success_otp': 'otp_fail'}
-                    return jsonify(response)
+                    sse.publish(response, type='update')
+                    
                     #return render_template('Readbadge.html', jsonify(response))
                 
                 else:
                     #porta aperta
                     response = {'success_otp': 'otp_success'}
-                    return jsonify(response)
+                    sse.publish(response, type='update')
                     #return render_template('Readbadge.html')
              
         print("ritorno il template")
