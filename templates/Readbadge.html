@@ -333,7 +333,6 @@
                         isRunning = true;
                         startTimer();
                     }
-                    getOTPoutcome();
                 }
 
                 
@@ -428,6 +427,8 @@
 
             // Update the datetime initially
             updateDatetime();
+
+            getOTPoutcome();
 
             // Update the datetime every second
             setInterval(updateDatetime, 1000);

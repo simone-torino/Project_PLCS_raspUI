@@ -216,6 +216,7 @@ def read():
     elif request.method == "GET":
         print("entro nella get")
         isApp = session.get("isApp")
+        print("isApp: " + isApp)
         if(isApp):
                 print("isApp get")
                 # query ad access history per capire se la porta è aperta oppure no
