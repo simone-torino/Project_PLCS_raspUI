@@ -126,6 +126,14 @@
             font-size: 25px;
         }
 
+        #otpresult {
+            position: absolute;
+            display: none;
+            top: 370px;
+            left: 60px;
+            font-weight: bold;
+            font-size: 25px;
+        }
 
         #datetime {
             position: absolute;
@@ -158,6 +166,7 @@
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
         <div id="message"></div>
         <div id="timer"></div>
+        <div id="otpresult"></div>
     </div>
 
     <script>
@@ -292,39 +301,29 @@
                 }
 
                 function getOTPoutcome(){
+
+                    var otpDiv = document.getElementById("otpresult");
                     fetch('/')
                         .then(response => response.json())
                         .then(data => {
 
                             // Do something with the response data
                             console.log(data);
-
-                            messageDiv.style.display = "block";
+                            
+                            otpDiv.style.display = "block";
 
                             if(data.success_otp == 'otp_success'){ //TODO: da mettere nome cognome ora ingresso/uscita 
                                 
-                                messageDiv.style.color = "#01a701";
-                                messageDiv.innerHTML = "Access allowed"
-
-                                setTimeout(function () {
-                                messageDiv.style.display = "none";
-                                messageDiv.innerText = '';
-                                messageDiv.style.color = "#000000";
-                                }, 4000);
+                                otpDiv.style.color = "#01a701";
+                                otpDiv.innerHTML = "Access allowed"
 
                             }else if(data.success_otp = 'otp_fail'){
 
-                                messageDiv.style.color = "#bb0000";
-                                messageDiv.innerHTML = "Access denied"
-
-                                setTimeout(function () {
-                                messageDiv.style.display = "none";
-                                messageDiv.innerText = '';
-                                messageDiv.style.color = "#000000";
-                                }, 4000);
+                                otpDiv.style.color = "#bb0000";
+                                otpDiv.innerHTML = "Access denied"
 
                             } else{
-                                messageDiv.innerHTML += "<br>waiting for otp..."
+                                otpDiv.innerHTML += "<br>waiting for otp..."
                             }
 
                         })
@@ -426,18 +425,6 @@
                                    
                 }
 
-
-        // Establish SSE connection
-        var eventSource = new EventSource('/stream');
-
-
-        // Listen for SSE events
-        eventSource.addEventListener('update', function(event) {
-        console.log('Received update event:', event.data);
-        // Perform the GET request or execute any desired action
-        getOTPoutcome();
-        });
-
         document.addEventListener("DOMContentLoaded", function () {
             // Function to update the datetime
             function updateDatetime() {
@@ -446,7 +433,7 @@
                 var datetimeString = currentDate.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); // Convert the date to a localized string
                 datetimeDiv.innerHTML = datetimeString;
 
-                
+                getOTPoutcome();
             }
 
             // Update the datetime initially
