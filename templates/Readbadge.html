@@ -156,12 +156,7 @@
         <button id="readotp-button" onclick="scanRFIDotp()">APP</button>
         <div id="datetime"></div>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
-        
-        {% if response %}
-            <div id="message">{{ response }}</div>
-        {% else %}
-            <div id="message"></div>
-        {% endif%}
+        <div id="message"></div>
         <div id="timer"></div>
     </div>
 
@@ -306,19 +301,31 @@
 
                             messageDiv.style.display = "block";
 
-                            if(data.success_otp){ //TODO: da mettere nome cognome ora ingresso/uscita 
+                            if(data.success_otp == 'otp_success'){ //TODO: da mettere nome cognome ora ingresso/uscita 
+                                
                                 messageDiv.style.color = "#01a701";
                                 messageDiv.innerHTML = "Access allowed"
-                            }else{
-                                messageDiv.style.color = "#bb0000";
-                                messageDiv.innerHTML = "Access denied"
-                            }
 
-                            setTimeout(function () {
+                                setTimeout(function () {
                                 messageDiv.style.display = "none";
                                 messageDiv.innerText = '';
                                 messageDiv.style.color = "#000000";
-                            }, 4000);
+                                }, 4000);
+
+                            }else if(data.success_otp = 'otp_fail'){
+
+                                messageDiv.style.color = "#bb0000";
+                                messageDiv.innerHTML = "Access denied"
+
+                                setTimeout(function () {
+                                messageDiv.style.display = "none";
+                                messageDiv.innerText = '';
+                                messageDiv.style.color = "#000000";
+                                }, 4000);
+
+                            } else{
+                                messageDiv.innerHTML += "<br>waiting for otp..."
+                            }
 
                         })
                         .catch(error => {
