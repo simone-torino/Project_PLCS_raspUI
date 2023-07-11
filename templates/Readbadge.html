@@ -156,7 +156,9 @@
         <button id="readotp-button" onclick="scanRFIDotp()">APP</button>
         <div id="datetime"></div>
         <button id="reload-button" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i></button>
-        <div id="message"></div>
+        {% if response %}
+            <div id="message">{{ response }}</div>
+        {% endif%}
         <div id="timer"></div>
     </div>
 
@@ -335,8 +337,6 @@
                     }
                 }
 
-                
-
                 function sleep(ms) {
                     return new Promise(resolve => setTimeout(resolve, ms));
                 }
@@ -423,13 +423,12 @@
                 var currentDate = new Date();
                 var datetimeString = currentDate.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); // Convert the date to a localized string
                 datetimeDiv.innerHTML = datetimeString;
+
                 getOTPoutcome();
             }
 
             // Update the datetime initially
             updateDatetime();
-
-            
 
             // Update the datetime every second
             setInterval(updateDatetime, 1000);
