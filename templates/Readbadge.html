@@ -291,6 +291,20 @@
                     isRunning = false;
                 }
 
+                function getOTPoutcome(){
+                    fetch('/')
+                        .then(response => response.json())
+                        .then(data => {
+                            
+                            // Do something with the response data
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            // Handle any errors
+                            console.error(error);
+                        });
+                }
+
                 function scanRFIDotp() {
                     if (isRunning) {
                         cancelTimer();
