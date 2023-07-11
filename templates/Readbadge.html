@@ -262,7 +262,10 @@
                             clearInterval(timer);
                             timerDiv.innerText = 'OTP expired';
                             setTimeout(function(){
+                                timerDiv.style.display = "block";
                                 timerDiv.innerText = '';
+                                messageDiv.style.display = "block";
+                                messageDiv.innerText = ''
                             }, 3000)
                             buttonDiv.innerText = 'APP';
                             isRunning = false;
@@ -291,6 +294,7 @@
                 function scanRFIDotp() {
                     if (isRunning) {
                         cancelTimer();
+
                     } else {
                         var isApp = true;
                         sendPostRequest(false, isApp)
