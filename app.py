@@ -6,6 +6,7 @@ from mfrc522 import SimpleMFRC522
 from datetime import datetime, timedelta
 import pyotp
 
+session = {}
 
 #alla raspberry viene associata una singola area_id
 raspberry_area_id = 37
@@ -50,7 +51,7 @@ def read():
         #acquisisco il booleano che mi dice se sto usando l'app
         isApp = request.get_json().get('isApp')
         if (isApp):
-            
+            session["isApp"] = True
             # Genera l'OTP code
             totp = pyotp.TOTP(pyotp.random_base32())
             otp_code = totp.now()
@@ -214,9 +215,7 @@ def read():
     # GET request, render the page
     elif request.method == "GET":
         print("entro nella get")
-        isApp = False
-        isApp = request.get_json().get('isApp')
-        print("dopo la request")
+        isApp = session.get("isApp")
         if(isApp):
                 print("isApp get")
                 # query ad access history per capire se la porta è aperta oppure no
