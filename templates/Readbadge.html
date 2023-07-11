@@ -366,12 +366,14 @@
                     } else {
                         messageDiv.innerHTML = "Badge not found<br>in the database";
                     }
-
-                    messageDiv.style.display = "block";
-                    //Reset message after 5s
-                    await sleep(5000);
-                    messageDiv.style.color = "#000000";
-                    messageDiv.innerHTML = "";
+                    
+                    if(data != None){
+                        //Reset message after 5s
+                        await sleep(5000);
+                        messageDiv.style.color = "#000000";
+                        messageDiv.innerHTML = "";
+                    }
+                    
                 }
 
         document.addEventListener("DOMContentLoaded", function () {
