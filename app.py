@@ -214,7 +214,9 @@ def read():
     # GET request, render the page
     elif request.method == "GET":
         print("entro nella get")
+        isApp = False
         isApp = request.get_json().get('isApp')
+        print("dopo la request")
         if(isApp):
                 print("isApp get")
                 # query ad access history per capire se la porta è aperta oppure no
