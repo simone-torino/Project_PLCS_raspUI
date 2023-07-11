@@ -8,7 +8,7 @@ import pyotp
 
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 31
+raspberry_area_id = 37
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
@@ -218,11 +218,11 @@ def read():
 
                 if():
                     # porta aperta
-                    response = {'otp_result' : True}
+                    response = {'success_otp' : True}
                     return jsonify(response)
                 else:
                     # porta chiusa
-                    response = {'otp_result' : False}
+                    response = {'success_otp' : False}
                     return jsonify(response)
                 
         area_name = get_area_name(raspberry_area_id)
