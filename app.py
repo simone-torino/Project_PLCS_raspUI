@@ -16,7 +16,7 @@ app.secret_key = 'secretkey'
 
 
 # MySQL configuration
-mysql_host = '192.168.145.16'
+mysql_host = '192.168.213.16'
 mysql_user = 'pi'
 mysql_password = '123'
 mysql_db = 'dac'
