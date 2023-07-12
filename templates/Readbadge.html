@@ -405,9 +405,11 @@
                         } else if (data.result == "violation") {
                             displayError(7);
                         } else if (data.result == "success_in") {
+                            messageDiv.style.color = "#000000";
                             messageDiv.innerHTML = "Welcome back<br>" + data.name + " " + data.surname;
                             messageDiv.innerHTML += "<br>Clock in time:<br>" + data.ts_in;
                         } else if (data.result == "success_out") {
+                            messageDiv.style.color = "#000000";
                             messageDiv.innerHTML = "Goodbye<br>" + data.name + " " + data.surname;
                             messageDiv.innerHTML += "<br>Clock out time:<br>" + data.ts_out;
                         }else{
