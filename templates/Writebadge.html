@@ -61,7 +61,7 @@
             position: absolute;
             display: none;
             top: 400px;
-            left: 280px;
+            left: 250px;
             font-weight: bold;
             font-size: 25px;
         }
@@ -156,8 +156,8 @@
 
         if (isSuccess) {
             messageDiv.style.color = "#01a701"; //green
-            messageDiv.innerHTML = "Card written correctly! You can login now...";
-            await sleep(7000);
+            messageDiv.innerHTML = "Card written correctly! Redirecting to home page...";
+            await sleep(6000);
             window.location.href = "/";
         } else {
             messageDiv.style.color = "#d40606"; //red
