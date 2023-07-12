@@ -9,7 +9,7 @@ import pyotp
 session = {}
 
 #alla raspberry viene associata una singola area_id
-raspberry_area_id = 37
+raspberry_area_id = 39
 
 app = Flask(__name__)
 app.secret_key = 'secretkey'
